@@ -68,7 +68,8 @@ namespace nw {
 
 			size_t _size = size[HiDim - Dim];
 			iterator<Ty> arr = new item_type<Ty>[_size];
-			for (size_t idx = 0; idx < _size; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < _size; idx++)
 			{
 				arr[idx] = below_type::template allocate<Ty>(size);
 			}
@@ -86,7 +87,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template free<Ty>(arr[idx], size);
 			}
@@ -140,7 +142,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+//#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				if (below_type::template all_of<Ty, UnaryPredicate>(arr[idx], size, pred) == false) return false;
 			}
@@ -161,7 +164,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+//#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				if (below_type::template any_of<Ty, UnaryPredicate>(arr[idx], size, pred) == true) return true;
 			}
@@ -182,7 +186,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+//#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				if (below_type::template none_of<Ty, UnaryPredicate>(arr[idx], size, pred) == false) return false;
 			}
@@ -201,7 +206,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template for_each<Ty, Function>(arr[idx], size, fn);
 			}
@@ -234,7 +240,8 @@ namespace nw {
 				assert_high_dim<HiDim>::assert(); // size parameter too small
 				assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-				for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for private(pos)
+				for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 				{
 					pos[HiDim2 - Dim] = idx;
 					below_type::template _impl_for_each_i<Ty, Function_i>(arr[idx], size, fn, pos);
@@ -276,7 +283,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				Ty* result = below_type::template find<Ty, Ty2>(arr[idx], size, val, pos);
 				if (result != nullptr)
@@ -303,7 +310,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+//#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				Ty* result = below_type::template find<Ty, Ty2>(arr[idx], size, val);
 				if (result != nullptr)
@@ -332,7 +340,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				Ty* result = below_type::template find_if<Ty, UnaryPredicate>(arr[idx], size, pred, pos);
 				if (result != nullptr)
@@ -360,7 +368,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+//#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				Ty* result = below_type::template find_if<Ty, UnaryPredicate>(arr[idx], size, pred);
 				if (result != nullptr)
@@ -389,7 +398,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				Ty* result = below_type::template find_if_not<Ty, UnaryPredicate>(arr[idx], size, pred, pos);
 				if (result != nullptr)
@@ -417,7 +426,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+//#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				Ty* result = below_type::template find_if_not<Ty, UnaryPredicate>(arr[idx], size, pred);
 				if (result != nullptr)
@@ -444,7 +454,8 @@ namespace nw {
 
 			size_t result = 0;
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for reduction(+:result)
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				result += below_type::template count<Ty, Ty2>(arr[idx], size, val);
 			}
@@ -468,7 +479,8 @@ namespace nw {
 
 			size_t result = 0;
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for reduction(+:result)
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				result += below_type::template count_if<Ty, UnaryPredicate>(arr[idx], size, pred);
 			}
@@ -492,7 +504,8 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+//#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				pos[HiDim2 - Dim] = idx;
 				Ty* result = below_type::template mismatch<Ty, Ty2>(arr, size, arr2, pos);
@@ -516,7 +529,7 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				Ty* result = below_type::template mismatch<Ty, Ty2>(arr, size, arr2);
 				if (result != nullptr) return result;
@@ -539,7 +552,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+//#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				if (below_type::template mismatch<Ty, Ty2>(arr, size, arr2) == false) return false;
 			}
@@ -561,7 +575,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template copy<newTy, Ty>(arr[idx], size, arr_result[idx]);
 			}
@@ -599,7 +614,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template copy_if<Ty, UnaryPredicate>(arr[idx], size, arr_result[idx], pred);
 			}
@@ -617,7 +633,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template move<Ty, Ty2>(arr[idx], size, arr2[idx]);
 			}
@@ -635,7 +652,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template swap<Ty>(arr[idx], size, arr2[idx]);
 			}
@@ -656,7 +674,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template transform<newTy, Ty, UnaryOperation>(arr[idx], size, arr_result[idx], op);
 			}
@@ -699,7 +718,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template transform<newTy, Ty, Ty2, BinaryOperation>(arr[idx], size, arr2[idx], arr_result[idx], binary_op);
 			}
@@ -740,7 +760,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template replace<Ty>(arr[idx], size, old_value, new_value);
 			}
@@ -760,7 +781,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template replace_if<Ty, UnaryPredicate>(arr[idx], size, pred, new_value);
 			}
@@ -781,7 +803,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template replace_copy<Ty>(arr[idx], size, arr_result[idx], old_value, new_value);
 			}
@@ -803,7 +826,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template replace_copy_if<Ty, UnaryPredicate>(arr[idx], size, arr_result[idx], pred, new_value);
 			}
@@ -821,7 +845,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template fill<Ty>(arr[idx], size, val);
 			}
@@ -840,7 +865,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
 			iterator<Ty> newarr = allocate<Ty>(size);
-			transform<Ty>(newarr, size, val);
+			fill<Ty>(newarr, size, val);
 			return newarr;
 		}
 
@@ -858,7 +883,8 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				below_type::template generate<Ty, Generator>(arr[idx], size, gen);
 			}
@@ -891,7 +917,8 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - Dim]; idx++)
+#pragma omp parallel for
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				pos[HiDim2 - Dim] = idx;
 				below_type::template _impl_generate_i<Ty, Generator>(arr[idx], size, gen, pos);
@@ -1139,7 +1166,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				pos[HiDim2 - 1] = idx;
 				fn(arr[idx], pos);
@@ -1181,7 +1208,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				if (arr[idx] == val)
 				{
@@ -1206,7 +1233,7 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				if (arr[idx] == val)
 				{
@@ -1233,7 +1260,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				if (pred(arr[idx]))
 				{
@@ -1260,7 +1287,7 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				if (pred(arr[idx]))
 				{
@@ -1288,7 +1315,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				if (!pred(arr[idx]))
 				{
@@ -1315,7 +1342,7 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				if (!pred(arr[idx]))
 				{
@@ -1375,7 +1402,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				pos[HiDim2 - 1] = idx;
 				if (!(arr[idx] == arr2[idx])) return &arr[idx];
@@ -1398,7 +1425,7 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				if (!(arr[idx] != arr2[idx])) return &arr[idx];
 			}
@@ -1472,7 +1499,7 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				if (pred(arr[idx])) arr_result[idx] = arr[idx];
 			}
@@ -1523,7 +1550,7 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			std::transform(arr, arr + size[HiDim - 1], op);
+			std::transform(arr, arr + size[HiDim - 1], arr_result, op);
 		}
 
 		/*
@@ -1703,7 +1730,7 @@ namespace nw {
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				arr[idx] = gen();
 			}
@@ -1736,7 +1763,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
-			for (size_t idx = 0; idx < size[HiDim - 1]; idx++)
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
 				pos[HiDim2 - 1] = idx;
 				arr[idx] = gen(pos);
