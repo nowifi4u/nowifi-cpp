@@ -41,11 +41,31 @@ namespace nw {
 		}
 
 		template <class Ty>
+		static inline string_type pure(const Ty& value)
+		{
+			ostringstream_type os;
+			os << value;
+			return os.str();
+		}
+
+		template <class... Args>
+		static inline string_type pure(const Args&... args)
+		{
+			return (... + pure(args));
+		}
+
+		template <class Ty>
 		static inline string_type dec(const Ty& value)
 		{
 			ostringstream_type os;
 			os << std::dec << value;
 			return os.str();
+		}
+
+		template <class... Args>
+		static inline string_type dec(const Args&... args)
+		{
+			return (... + dec(args));
 		}
 
 		template <class Ty>
@@ -56,12 +76,25 @@ namespace nw {
 			return os.str();
 		}
 
+
+		template <class... Args>
+		static inline string_type hex(const Args&... args)
+		{
+			return (... + hex(args));
+		}
+
 		template <class Ty>
 		static inline string_type oct(const Ty& value)
 		{
 			ostringstream_type os;
 			os << std::oct << value;
 			return os.str();
+		}
+
+		template <class... Args>
+		static inline string_type oct(const Args&... args)
+		{
+			return (... + oct(args));
 		}
 
 	}; // class basic_to_string
@@ -73,6 +106,12 @@ namespace nw {
 	static inline std::string to_string_binary(const Ty& value)
 	{
 		return std::string(reinterpret_cast<const char*>(&value), sizeof(Ty));
+	}
+
+	template <class... Args>
+	static inline std::string to_string_binary(const Args&... args)
+	{
+		return (... + to_string_binary(args));
 	}
 
 } // namespace nw
