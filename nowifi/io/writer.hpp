@@ -44,7 +44,7 @@ namespace nw {
 
 		//STATIC
 		template <class Ty>
-		static ostream_type& write(const Ty data, ostream_type& os, const Error_type& err = global::Error_Throw<std::string>)
+		static ostream_type& write(const Ty& data, ostream_type& os, const Error_type& err = global::Error_Throw<std::string>)
 		{
 			os << data;
 			if (os.bad()) err.execute("write");
@@ -52,9 +52,50 @@ namespace nw {
 		}
 
 		template <class Ty>
-		Writer_type& write(const Ty data)
+		Writer_type& write(const Ty& data)
 		{
 			Writer_type::write<Ty>(data, os, err);
+			return THIS;
+		}
+
+		//-------------------- write multiple --------------------//
+
+		//STATIC
+		template <class Ty>
+		static ostream_type& write(ostream_type& os, const Error_type& err, const Ty& data)
+		{
+			return Writer_type::write(data, os, err);
+		}
+
+		//STATIC
+		template <class Ty, class... Args>
+		static ostream_type& write(ostream_type& os, const Error_type& err, const Ty& data, const Args&... args)
+		{
+			Writer_type::write(os, err, data);
+			Writer_type::write(os, err, args...);
+			return os;
+		}
+
+		//STATIC
+		template <class Ty>
+		static ostream_type& write(ostream_type& os, const Ty& data)
+		{
+			return Writer_type::write(data, os, global::Error_Throw<std::string>);
+		}
+
+		//STATIC
+		template <class Ty, class... Args>
+		static ostream_type& write(ostream_type& os, const Ty& data, const Args&... args)
+		{
+			Writer_type::write(os, data);
+			Writer_type::write(os, args...);
+			return os;
+		}
+
+		template <class Ty, class... Args>
+		Writer_type& write(const Ty& data, const Args&... args)
+		{
+			Writer_type::write(os, err, data, args...);
 			return THIS;
 		}
 
@@ -86,6 +127,80 @@ namespace nw {
 			return THIS;
 		}
 
+		//-------------------- writeln empty number --------------------//
+
+		//STATIC
+		static ostream_type& writeln(size_t num, ostream_type& os, const Error_type& err)
+		{
+			for (size_t idx = 0; idx < num; idx++)
+			{
+				Writer_type::writeln();
+			}
+			return os;
+		}
+
+		Writer_type& writeln(size_t num)
+		{
+			Writer_type::writeln(num, os, err);
+			return THIS;
+		}
+
+		//-------------------- writeln --------------------//
+
+		//STATIC
+		template <class Ty>
+		static ostream_type& writeln(const Ty& data, ostream_type& os, const Error_type& err = global::Error_Throw<std::string>)
+		{
+			Writer_type::write(data, os, err);
+			return Writer_type::writeln(os, err);
+		}
+
+		template <class Ty>
+		Writer_type& writeln(const Ty& data)
+		{
+			Writer_type::writeln(data, os, err);
+			return THIS;
+		}
+
+		//-------------------- writeln multiple --------------------//
+
+		//STATIC
+		template <class Ty>
+		static ostream_type& writeln(ostream_type& os, const Error_type& err, const Ty& data)
+		{
+			return Writer_type::writeln(data, os, err);
+		}
+
+		//STATIC
+		template <class Ty, class... Args>
+		static ostream_type& writeln(ostream_type& os, const Error_type& err, const Ty& data, const Args&... args)
+		{
+			Writer_type::write(os, err, data, args...);
+			return Writer_type::writeln(os, err);
+		}
+
+		//STATIC
+		template <class Ty>
+		static ostream_type& writeln(ostream_type& os, const Ty& data)
+		{
+			return Writer_type::writeln(data, os, global::Error_Throw<std::string>);
+		}
+
+		//STATIC
+		template <class Ty, class... Args>
+		static ostream_type& writeln(ostream_type& os, const Ty& data, const Args&... args)
+		{
+			Writer_type::write(os, global::Error_Throw<std::string>, data, args...);
+			return Writer_type::writeln(os, global::Error_Throw<std::string>);
+		}
+
+		template <class Ty, class... Args>
+		Writer_type& writeln(const Ty& data, const Args&... args)
+		{
+			Writer_type::writeln(os, err, data, args...);
+			return THIS;
+		}
+
 		//-------------------- tabulate --------------------//
 
 		//STATIC
@@ -113,24 +228,6 @@ namespace nw {
 		Writer_type& endline()
 		{
 			Writer_type::endline(os, err);
-			return THIS;
-		}
-
-		//-------------------- writeln --------------------//
-
-		//STATIC
-		template <class Ty>
-		static ostream_type& writeln(const Ty data, ostream_type& os, const Error_type& err = global::Error_Throw<std::string>)
-		{
-			Writer_type::write(data, os, err);
-			Writer_type::writeln(os, err);
-			return os;
-		}
-
-		template <class Ty>
-		Writer_type& writeln(const Ty data)
-		{
-			Writer_type::writeln(data, os, err);
 			return THIS;
 		}
 
