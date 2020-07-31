@@ -6,6 +6,9 @@
 
 namespace nw {
 
+	template <size_t Dim>
+	class multi_array;
+
 	////////////////////////////////             ////////////////////////////////
 	//------------------------------             ------------------------------//
 	//------------------------------ multi_array ------------------------------//
@@ -18,6 +21,9 @@ namespace nw {
 	public:
 		MAKE_STATIC_TEMPLATE_1(multi_array, <Dim>);
 
+		friend class multi_array;
+		
+		template <size_t Dim>
 		friend class multi_array;
 
 	protected:
@@ -508,7 +514,7 @@ namespace nw {
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				pos[HiDim2 - Dim] = idx;
-				Ty* result = below_type::template mismatch<Ty, Ty2>(arr, size, arr2, pos);
+				Ty* result = below_type::template mismatch<Ty, Ty2>(arr[idx], size, arr2[idx], pos);
 				if (result != nullptr) return result;
 			}
 
@@ -531,7 +537,7 @@ namespace nw {
 
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
-				Ty* result = below_type::template mismatch<Ty, Ty2>(arr, size, arr2);
+				Ty* result = below_type::template mismatch<Ty, Ty2>(arr[idx], size, arr2[idx]);
 				if (result != nullptr) return result;
 			}
 
@@ -555,7 +561,7 @@ namespace nw {
 //#pragma omp parallel for
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
-				if (below_type::template mismatch<Ty, Ty2>(arr, size, arr2) == false) return false;
+				if (below_type::template mismatch<Ty, Ty2>(arr[idx], size, arr2[idx]) == false) return false;
 			}
 
 			return true;
@@ -776,7 +782,7 @@ namespace nw {
 		 *                 a val convertible to bool
 		 * @param <new_value> - Value to assign to replaced elements
 		 */
-		template <class Ty, size_t HiDim, class UnaryPredicate>
+		template <class Ty, class UnaryPredicate, size_t HiDim>
 		static inline void replace_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred, const Ty& new_value)
 		{
 			assert_high_dim<HiDim>::assert(); // size parameter too small
@@ -978,6 +984,9 @@ namespace nw {
 	public:
 		MAKE_STATIC_TEMPLATE_1(multi_array, <1U>);
 
+		friend class multi_array;
+
+		template <size_t Dim>
 		friend class multi_array;
 
 	protected:
