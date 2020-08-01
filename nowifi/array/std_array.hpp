@@ -4,6 +4,8 @@
 #include <tuple>
 #include <memory>
 
+#include <nowifi/compiler/assert.hpp>
+
 namespace nw {
 
 	namespace std_array {
@@ -254,24 +256,46 @@ namespace nw {
 		//-------------------- cut --------------------//
 
 		template <size_t delta, class Ty, size_t size>
-		void cut(
+		void cut_back(
 			const std::array<Ty, size>& src,
 			std::array<Ty, delta>& arr1)
 		{
-			static_assert(size >= delta, "cut: argument too big");
+			compile_assert<(size >= delta)>::assert(); // delta argument too big
 
 			std::copy_n(src.begin(), delta, arr1.begin());
 		}
 
 		template <size_t delta, class Ty, size_t size>
-		std::array<Ty, delta> cut(
+		std::array<Ty, delta> cut_back(
 			const std::array<Ty, size>& src)
 		{
+			compile_assert<(size >= delta)>::assert(); // delta argument too big
+
 			std::array<Ty, delta> arr1;
 
-			cut<delta, Ty, size>(src, arr1);
+			cut_back<delta, Ty, size>(src, arr1);
 
 			return arr1;
+		}
+
+		template <size_t delta, class Ty, size_t size>
+		void cut_front(
+			const std::array<Ty, size>& src,
+			std::array<Ty, delta>& arr1)
+		{
+			compile_assert<(size >= delta)>::assert(); // delta argument too big
+
+			auto begin = src.begin() + delta;
+			std::copy_n(begin, size - delta, arr1.begin());
+		}
+
+		template <size_t delta, class Ty, size_t size>
+		std::array<Ty, delta> cut_front(
+			const std::array<Ty, size>& src)
+		{
+			std::array<Ty, delta> arr;
+			cut_front<delta, Ty, size>(src, arr);
+			return arr;
 		}
 
 		template <size_t delta, class Ty, size_t size>
@@ -280,49 +304,24 @@ namespace nw {
 			std::array<Ty, delta>& arr1,
 			std::array<Ty, size - delta>& arr2)
 		{
-			static_assert(size >= delta, "cut: argument too big");
+			compile_assert<(size >= delta)>::assert(); // delta argument too big
 
 			auto joint = std::copy_n(src.begin(), delta, arr1.begin());
 			/*         */std::copy_n(joint, size - delta, arr2.begin());
 		}
 
-		template <size_t delta, class Ty, size_t size>
-		std::array<Ty, delta> cut(
-			const std::array<Ty, size>& src,
-			std::array<Ty, size - delta>& arr2)
-		{
-			std::array<Ty, delta> arr1;
-
-			cut<delta, Ty, size>(src, arr1, arr2);
-
-			return arr1;
-		}
-
 		//-------------------- pop_front --------------------//
-
-		template <size_t delta, class Ty, size_t size>
-		std::array<Ty, size - delta> pop_front(
-			const std::array<Ty, size>& src)
-		{
-			static_assert(size >= delta, "pop_front: argument too big");
-
-			std::array<Ty, size - delta> arr;
-			auto begin = src.begin() + delta;
-			std::copy_n(begin, size - delta, arr.begin());
-
-			return arr;
-		}
 
 		template <size_t delta, class Ty, size_t size>
 		std::array<Ty, size - delta> cut(
 			const std::array<Ty, size>& src,
 			array_ref<Ty, delta> output)
 		{
-			static_assert(size >= delta, "cut: too many parameters");
+			compile_assert<(size >= delta)>::assert(); // delta argument too big
 
 			std::copy_n(src.begin(), delta, output.begin());
 
-			return pop_front<delta, Ty, size>(src);
+			return cut_front<delta, Ty, size>(src);
 		}
 
 
@@ -367,29 +366,17 @@ namespace nw {
 		//-------------------- pop_back --------------------//
 
 		template <size_t delta, class Ty, size_t size>
-		std::array<Ty, size - delta> pop_back(
-			const std::array<Ty, size>& src)
-		{
-			static_assert(size >= delta, "pop_front: argument too big");
-
-			std::array<Ty, size - delta> arr;
-			std::copy_n(src.begin(), size - delta, arr.begin());
-
-			return arr;
-		}
-
-		template <size_t delta, class Ty, size_t size>
 		std::array<Ty, size - delta> cut(
 			array_ref<Ty, delta>& output,
 			const std::array<Ty, size>& src)
 		{
-			static_assert(size >= delta, "cut: too many parameters");
+			compile_assert<(size >= delta)>::assert(); // delta argument too big
 
 			auto pivot = src.begin() + delta;
 
 			std::copy_n(pivot, delta, output.begin());
 
-			return pop_back<delta, Ty, size>(src);
+			return cut_back<delta, Ty, size>(src);
 		}
 
 		template <class Ty, size_t size>
