@@ -5,35 +5,35 @@ namespace nw {
 	namespace BinOps {
 
 		template<typename Ty>
-		constexpr inline bool boolenify(const Ty value) {
+		_CONSTEXPR17 inline bool boolenify(const Ty value) {
 			return !!value;
 		}
 
-		constexpr inline bool NOT(bool a) {
+		_CONSTEXPR17 inline bool NOT(bool a) {
 			return !a;
 		}
 
-		constexpr inline bool OR(bool a, bool b) {
+		_CONSTEXPR17 inline bool OR(bool a, bool b) {
 			return a || b;
 		}
 
-		constexpr inline bool AND(bool a, bool b) {
+		_CONSTEXPR17 inline bool AND(bool a, bool b) {
 			return a && b;
 		}
 
-		constexpr inline bool XOR(bool a, bool b) {
+		_CONSTEXPR17 inline bool XOR(bool a, bool b) {
 			return a != b;
 		}
 
-		constexpr inline bool EQUALS(bool a, bool b) {
+		_CONSTEXPR17 inline bool EQUALS(bool a, bool b) {
 			return a == b;
 		}
 
-		constexpr inline bool SUBTRACT(bool a, bool b) {
+		_CONSTEXPR17 inline bool SUBTRACT(bool a, bool b) {
 			return a && (!b);
 		}
 
-		constexpr inline bool TRANS(bool a, bool b) {
+		_CONSTEXPR17 inline bool TRANS(bool a, bool b) {
 			return !SUBTRACT(a, b);
 		}
 
