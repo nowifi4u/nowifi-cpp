@@ -8,7 +8,7 @@ namespace nw {
 	class basic_to_string
 	{
 	public:
-		MAKE_STATIC_TEMPLATE_1(basic_to_string, <charTy>);
+		CLASS_MAKE_STATIC(basic_to_string, <charTy>);
 
 		using string_type = std::basic_string<charTy>;
 
