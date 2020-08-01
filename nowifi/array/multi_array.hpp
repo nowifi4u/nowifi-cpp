@@ -19,7 +19,7 @@ namespace nw {
 	class multi_array
 	{
 	public:
-		MAKE_STATIC_TEMPLATE_1(multi_array, <Dim>);
+		CLASS_MAKE_STATIC(multi_array, <Dim>);
 
 		friend class multi_array;
 		
@@ -233,26 +233,26 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_low_dim<Layer>::assert(); // Layer parameter too big
 
-			const auto cut_size = std_array::pop_back<Layer>(size);
+			const auto cut_size = std_array::cut_back<Layer>(size);
 
 			multi_array<Dim - Layer>::template for_each<multi_array<Layer>::template iterator<Ty>, Function>(arr, cut_size, fn);
 		}
 
 	protected:
 
-			template <class Ty, class Function_i, size_t HiDim, size_t HiDim2>
-			static inline void _impl_for_each_i(iterator<Ty> arr, const index_high_type<HiDim>& size, Function_i fn, index_high_type<HiDim2>& pos)
-			{
-				assert_high_dim<HiDim>::assert(); // size parameter too small
-				assert_high_dim<HiDim2>::assert(); // pos parameter too small
+		template <class Ty, class Function_i, size_t HiDim, size_t HiDim2>
+		static inline void _impl_for_each_i(iterator<Ty> arr, const index_high_type<HiDim>& size, Function_i fn, index_high_type<HiDim2>& pos)
+		{
+			assert_high_dim<HiDim>::assert(); // size parameter too small
+			assert_high_dim<HiDim2>::assert(); // pos parameter too small
 
 #pragma omp parallel for private(pos)
-				for (int idx = 0; idx < size[HiDim - Dim]; idx++)
-				{
-					pos[HiDim2 - Dim] = idx;
-					below_type::template _impl_for_each_i<Ty, Function_i>(arr[idx], size, fn, pos);
-				}
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
+			{
+				pos[HiDim2 - Dim] = idx;
+				below_type::template _impl_for_each_i<Ty, Function_i>(arr[idx], size, fn, pos);
 			}
+		}
 
 	public:
 
@@ -271,6 +271,27 @@ namespace nw {
 
 			index_high_type<HiDim> pos;
 			_impl_for_each_i<Ty, Function_i>(arr, size, fn, pos);
+		}
+
+		/*
+		 * Applies function <fn> to each of the elements.
+		 *
+		 * @param <Layer> - Layer to stop at
+		 * @param <arr> - Pointer to array
+		 * @param <size> - Size of array
+		 * @param <fn> - Unary function that accepts an element and
+		 *               its position as arguments
+		 */
+		template <size_t Layer, class Ty, class Function, size_t HiDim>
+		static inline void for_each_i_layer(iterator<Ty> arr, const index_high_type<HiDim>& size, Function fn)
+		{
+			assert_high_dim<HiDim>::assert(); // size parameter too small
+			assert_low_dim<Layer>::assert(); // Layer parameter too big
+
+			const auto cut_size = std_array::cut_back<Layer>(size);
+			index_high_type<Dim - Layer> pos;
+
+			multi_array<Dim - Layer>::template _impl_for_each_i<multi_array<Layer>::template iterator<Ty>, Function>(arr, cut_size, fn, pos);
 		}
 
 		/*
@@ -982,7 +1003,7 @@ namespace nw {
 	class multi_array <1U>
 	{
 	public:
-		MAKE_STATIC_TEMPLATE_1(multi_array, <1U>);
+		CLASS_MAKE_STATIC(multi_array, <1U>);
 
 		friend class multi_array;
 
@@ -1162,7 +1183,7 @@ namespace nw {
 			assert_high_dim<HiDim>::assert(); // size parameter too small
 			assert_low_dim<Layer>::assert(); // Layer parameter too big
 
-			const auto cut_size = std_array::pop_back<Layer>(size);
+			const auto cut_size = std_array::cut_back<Layer>(size);
 
 			multi_array<1 - Layer>::template for_each<multi_array<Layer>::template iterator<Ty>, Function>(arr, cut_size, fn);
 		}
@@ -1199,6 +1220,27 @@ namespace nw {
 
 			index_high_type<HiDim> pos;
 			_impl_for_each_i(arr, size, fn, pos);
+		}
+
+		/*
+		 * Applies function <fn> to each of the elements.
+		 *
+		 * @param <Layer> - Layer to stop at
+		 * @param <arr> - Pointer to array
+		 * @param <size> - Size of array
+		 * @param <fn> - Unary function that accepts an element and
+		 *               its position as arguments
+		 */
+		template <size_t Layer, class Ty, class Function, size_t HiDim>
+		static inline void for_each_i_layer(iterator<Ty> arr, const index_high_type<HiDim>& size, Function fn)
+		{
+			assert_high_dim<HiDim>::assert(); // size parameter too small
+			assert_low_dim<Layer>::assert(); // Layer parameter too big
+
+			const auto cut_size = std_array::cut_back<Layer>(size);
+			index_high_type<1 - Layer> pos;
+
+			multi_array<1 - Layer>::template _impl_for_each_i<multi_array<Layer>::template iterator<Ty>, Function>(arr, cut_size, fn, pos);
 		}
 
 		/*
@@ -1830,11 +1872,17 @@ namespace nw {
 	class multi_array <0U>
 	{
 	public:
-		MAKE_STATIC_TEMPLATE_1(multi_array, <0U>);
+		CLASS_MAKE_STATIC(multi_array, <0U>);
 
 		friend class multi_array;
 
+		template <size_t Dim>
+		friend class multi_array;
+
 	protected:
+
+		template <size_t HiDim>
+		using index_high_type = std::array<size_t, HiDim>;
 
 		template <class Ty>
 		using iterator = Ty;
@@ -1852,6 +1900,8 @@ namespace nw {
 
 	public:
 
+		using index_type = index_high_type<0>;
+
 		static inline constexpr size_t depth()
 		{
 			return 0;
@@ -1860,9 +1910,15 @@ namespace nw {
 	protected:
 
 		template <class Ty, class Function, size_t HiDim>
-		static inline void for_each(iterator<Ty>& arr, const index_high_type<HiDim>& size, Function f)
+		static inline void for_each(iterator<Ty>& arr, const index_high_type<HiDim>& size, Function fn)
 		{
-			f(arr);
+			fn(arr);
+		}
+
+		template <class Ty, class Function_i, size_t HiDim, size_t HiDim2>
+		static inline void _impl_for_each_i(iterator<Ty> arr, const index_high_type<HiDim>& size, Function_i fn, index_high_type<HiDim2>& pos)
+		{
+			f(arr, pos);
 		}
 
 	}; // class multi_array<0>
