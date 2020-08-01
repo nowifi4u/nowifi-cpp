@@ -5,7 +5,7 @@
 
 namespace nw {
 
-    unsigned inline constexpr Hash(char const* input) {
+    unsigned inline _CONSTEXPR17 Hash(char const* input) {
         return *input ? /*!= '\0'*/
             static_cast<unsigned int>(*input) + 33 * Hash(input + 1) :
             5381;
