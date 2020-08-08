@@ -26,7 +26,7 @@ namespace nw {
 
         void consume(const Ty& value)
         {
-            _min = Math::ref::min(_min, value);
+            _min = Math::constref::min(_min, value);
         }
 
         Ty min() const
@@ -54,7 +54,7 @@ namespace nw {
 
         void consume(const Ty& value)
         {
-            _max = Math::ref::max(_max, value);
+            _max = Math::constref::max(_max, value);
         }
 
         Ty max() const

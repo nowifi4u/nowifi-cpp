@@ -28,7 +28,7 @@ namespace nw {
             return (val1 - val2) > val1;
         }
 
-        namespace ref {
+        namespace constref {
         
             template <class Ty>
             inline const Ty& min(const Ty& val1, const Ty& val2)

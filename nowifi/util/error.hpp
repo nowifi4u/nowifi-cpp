@@ -6,7 +6,13 @@
 namespace nw {
 
 	template <class Ty>
-	class Error {
+	class Error
+	{
+	public:
+
+		using item_type = Ty;
+		using function_type = std::function<void(const Ty&)>;
+
 
 	protected:
 
@@ -17,15 +23,16 @@ namespace nw {
 
 	public:
 
-		Error(std::function<void(const Ty&)> fn) noexcept
+		explicit Error(function_type fn) noexcept
 			: fn(fn) {}
 
 		Error(const Error<Ty>& second) noexcept
 			: fn(second.fn) {}
 
-		virtual ~Error() noexcept {}
+		~Error() noexcept {}
 
-		virtual void execute(const Ty& msg) const {
+		void execute(const Ty& msg) const
+		{
 			fn(msg);
 		}
 
@@ -34,12 +41,14 @@ namespace nw {
 	namespace global {
 
 		template <class Ty>
-		extern Error<Ty> Error_Throw = Error<Ty>([](const Ty& msg) {
+		extern Error<Ty> Error_Throw = Error<Ty>([](const Ty& msg)
+		{
 			throw msg;
 		});
 
 		template <class Ty>
-		extern Error<Ty> Error_Nothing = Error<Ty>([](const Ty& msg) {
+		extern Error<Ty> Error_Nothing = Error<Ty>([](const Ty& msg)
+		{
 
 		});
 
