@@ -451,6 +451,29 @@ namespace nw {
 			return clone_from<Ty, size>(src.get());
 		}
 
+		//-------------------- create --------------------//
+
+		template <class Ty, size_t size>
+		void _impl_create(std::array<Ty, size>& arr, const Ty& arg1)
+		{
+			arr[size - 1] = arg1;
+		}
+
+		template <class Ty, size_t size, class... Args>
+		void _impl_create(std::array<Ty, size>& arr, const Ty& arg1, const Args&... args)
+		{
+			arr[size - 1 - sizeof...(args)] = arg1;
+			return _impl_create(arr, args...);
+		}
+
+		template <class Ty, size_t size, class... Args>
+		std::array<Ty, size> create(const Args&... args)
+		{
+			std::array<Ty, size> arr;
+			_impl_create(arr, args...);
+			return arr;
+		}
+
 	} // namespace std_array
 
 } // namespace nw

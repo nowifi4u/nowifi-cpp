@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nowifi/math/math.hpp>
+#include <nowifi/pack/compare.hpp>
 #include <nowifi/util/consumer.hpp>
 
 #include <limits>
@@ -8,7 +8,14 @@
 namespace nw {
 
     template <class Ty>
-    class MinReducer : public StateConsumer<Ty>
+    class _Consumer_Reset : public Consumer<Ty>
+    {
+    public:
+        virtual void reset(const Ty& value) = 0;
+    };
+
+    template <class Ty>
+    class MinReducer : public _Consumer_Reset<Ty>
     {
     protected:
         Ty _min;
@@ -26,7 +33,7 @@ namespace nw {
 
         void consume(const Ty& value)
         {
-            _min = Math::constref::min(_min, value);
+            _min = Compare::constref::min(_min, value);
         }
 
         Ty min() const
@@ -36,7 +43,7 @@ namespace nw {
     };
 
     template <class Ty>
-    class MaxReducer : public StateConsumer<Ty>
+    class MaxReducer : public _Consumer_Reset<Ty>
     {
     protected:
         Ty _max;
@@ -54,7 +61,7 @@ namespace nw {
 
         void consume(const Ty& value)
         {
-            _max = Math::constref::max(_max, value);
+            _max = Compare::constref::max(_max, value);
         }
 
         Ty max() const
@@ -93,18 +100,18 @@ namespace nw {
     };
 
     template <class Ty>
-    class SumReducer : public StateConsumer<Ty>
+    class SumReducer : public _Consumer_Reset<Ty>
     {
     protected:
         Ty _sum;
 
     public:
-        SumReducer(const Ty& value = 0)
+        SumReducer(const Ty& value = Ty(0))
         {
             this->reset(value);
         }
 
-        void reset(const Ty& value = 0)
+        void reset(const Ty& value = Ty(0))
         {
             _sum = value;
         }
