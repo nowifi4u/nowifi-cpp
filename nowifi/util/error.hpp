@@ -23,7 +23,7 @@ namespace nw {
 
 	public:
 
-		explicit Error(function_type fn) noexcept
+		Error(function_type fn) noexcept
 			: fn(fn) {}
 
 		Error(const Error<Ty>& second) noexcept

@@ -15,6 +15,9 @@ namespace nw {
 
 	public:
 
+		using char_type = charTy;
+		using c_string_type = const char_type*;
+
 		using string_type = std::basic_string<charTy>;
 
 		using ostream_type = std::basic_ostream<charTy>;

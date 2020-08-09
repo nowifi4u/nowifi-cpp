@@ -19,6 +19,9 @@ namespace nw {
 
 	public:
 
+		using char_type = charTy;
+		using c_string_type = const char_type*;
+
 		using string_type = std::basic_string<charTy>;
 
 		using istream_type = std::basic_istream<charTy>;
@@ -499,8 +502,8 @@ namespace nw {
 		//-------------------- stl_readArray --------------------//
 
 		//STATIC
-		template <class Ty, class _InIt>
-		static istream_type& _stl_readArray(_InIt _First, _InIt _Last, istream_type& in, const Error_type& err = global::Error_Throw<std::string>)
+		template <class Ty, class _Iter>
+		static istream_type& _stl_readArray(_Iter _First, _Iter _Last, istream_type& in, const Error_type& err = global::Error_Throw<std::string>)
 		{
 			std::generate(_First, _Last, [&in, &err]()
 			{
@@ -509,10 +512,10 @@ namespace nw {
 			return in;
 		}
 
-		template <class Ty, class _InIt>
-		Scanner_type& stl_readArray(_InIt _First, _InIt _Last)
+		template <class Ty, class _Iter>
+		Scanner_type& stl_readArray(_Iter _First, _Iter _Last)
 		{
-			Scanner_type::_stl_readArray<Ty, _InIt>(_First, _Last, in, err);
+			Scanner_type::_stl_readArray<Ty, _Iter>(_First, _Last, in, err);
 			return THIS;
 		}
 
@@ -552,8 +555,8 @@ namespace nw {
 		//-------------------- stl_readArray_separated --------------------//
 
 		//STATIC
-		template <class Ty, class _InIt>
-		static istream_type& _stl_readArray_separated(_InIt _First, _InIt _Last, charTy sep, istream_type& in, const Error_type& err = global::Error_Throw<std::string>)
+		template <class Ty, class _Iter>
+		static istream_type& _stl_readArray_separated(_Iter _First, _Iter _Last, charTy sep, istream_type& in, const Error_type& err = global::Error_Throw<std::string>)
 		{
 			std::generate(_First, _Last, [sep, &in, &err]()
 			{
@@ -562,8 +565,8 @@ namespace nw {
 			return in;
 		}
 
-		template <class Ty, class _InIt>
-		Scanner_type& stl_readArray_separated(_InIt _First, _InIt _Last, charTy sep)
+		template <class Ty, class _Iter>
+		Scanner_type& stl_readArray_separated(_Iter _First, _Iter _Last, charTy sep)
 		{
 			Scanner_type::_stl_readArray_separated<Ty>(_First, _Last, sep, in, err);
 			return THIS;

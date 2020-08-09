@@ -11,14 +11,17 @@ namespace nw {
 	public:
 		CLASS_MAKE_STATIC(basic_to_string, <charTy>);
 
+		using char_type = charTy;
+		using c_string_type = char_type*;
+
 		using string_type = std::basic_string<charTy>;
 
 		using ostringstream_type = std::basic_ostringstream<charTy>;
 
 		using Writer_type = basic_Writer<charTy>;
 
-		template <class _InIt>
-		_NODISCARD static inline string_type stl_array(const _InIt _First, const _InIt _Last, const string_type& itemDelimiter)
+		template <class _Iter>
+		_NODISCARD static inline string_type stl_array(const _Iter _First, const _Iter _Last, const string_type& itemDelimiter)
 		{
 			ostringstream_type os;
 			Writer_type::_stl_writeArray(_First, _Last, itemDelimiter, os);
