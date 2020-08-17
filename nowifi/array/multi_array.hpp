@@ -60,6 +60,8 @@ namespace nw {
 		 * @param <Ty> [template] - Item type of NEW ARRAY
 		 * @param <size> - Size of NEW ARRAY
 		 * @return Pointer to NEW ARRAY
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, size_t HiDim> _NODISCARD
 		static inline iterator<Ty> allocate(const index_high_type<HiDim>& size)
@@ -81,6 +83,8 @@ namespace nw {
 		 * 
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of array
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, size_t HiDim>
 		static inline void deallocate(iterator<Ty> arr, const index_high_type<HiDim>& size)
@@ -142,7 +146,6 @@ namespace nw {
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 
-//#pragma omp parallel for
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				if (below_type::template all_of<Ty, UnaryPredicate>(arr[idx], size, pred) == false) return false;
@@ -164,7 +167,6 @@ namespace nw {
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 
-//#pragma omp parallel for
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				if (below_type::template any_of<Ty, UnaryPredicate>(arr[idx], size, pred) == true) return true;
@@ -186,7 +188,6 @@ namespace nw {
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 
-//#pragma omp parallel for
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				if (below_type::template none_of<Ty, UnaryPredicate>(arr[idx], size, pred) == false) return false;
@@ -200,6 +201,8 @@ namespace nw {
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of array
 		 * @param <fn> - Unary function that accepts an element as argument
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Function, size_t HiDim>
 		static inline void for_each(iterator<Ty> arr, const index_high_type<HiDim>& size, Function fn)
@@ -220,6 +223,8 @@ namespace nw {
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of array
 		 * @param <fn> - Unary function that accepts an element as argument
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <size_t Layer, class Ty, class Function, size_t HiDim>
 		static inline void for_each_layer(iterator<Ty> arr, const index_high_type<HiDim>& size, Function fn)
@@ -257,6 +262,8 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <fn> - Unary function that accepts an element and
 		 *               its position as arguments
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Function_i, size_t HiDim>
 		static inline void for_each_i(iterator<Ty> arr, const index_high_type<HiDim>& size, Function_i fn)
@@ -275,6 +282,8 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <fn> - Unary function that accepts an element and
 		 *               its position as arguments
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <size_t Layer, class Ty, class Function, size_t HiDim>
 		static inline void for_each_i_layer(iterator<Ty> arr, const index_high_type<HiDim>& size, Function fn)
@@ -297,6 +306,8 @@ namespace nw {
 		 * @param <val> - Value to search for
 		 * @param <pos> - Parameter to save found element's position
 		 * @return **See above**
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Ty2, size_t HiDim, size_t HiDim2>
 		static inline Ty* find(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty2& val, index_high_type<HiDim2>& pos)
@@ -331,7 +342,6 @@ namespace nw {
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 
-//#pragma omp parallel for
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				Ty* result = below_type::template find<Ty, Ty2>(arr[idx], size, val);
@@ -388,8 +398,7 @@ namespace nw {
 		static inline Ty* find_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
-
-//#pragma omp parallel for
+			
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				Ty* result = below_type::template find_if<Ty, UnaryPredicate>(arr[idx], size, pred);
@@ -447,7 +456,6 @@ namespace nw {
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 
-//#pragma omp parallel for
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				Ty* result = below_type::template find_if_not<Ty, UnaryPredicate>(arr[idx], size, pred);
@@ -467,6 +475,8 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <val> - Value to match
 		 * @return **See above**
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Ty2, size_t HiDim> _NODISCARD
 		static inline size_t count(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty2& val)
@@ -492,6 +502,8 @@ namespace nw {
 		 * @param <pred> - Unary function that accepts an element and returns
 		 *                 a val convertible to bool
 		 * @return **See above**
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD
 		static inline size_t count_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
@@ -525,7 +537,6 @@ namespace nw {
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 			static_assert(HiDim2 >= Dim, "Parameter <size> too small");
 
-//#pragma omp parallel for
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				pos[HiDim2 - Dim] = idx;
@@ -573,7 +584,6 @@ namespace nw {
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 
-//#pragma omp parallel for
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				if (below_type::template mismatch<Ty, Ty2>(arr[idx], size, arr2[idx]) == false) return false;
@@ -590,6 +600,8 @@ namespace nw {
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of arrays
 		 * @param <arr_result> - Pointer to result array
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class newTy, class Ty, size_t HiDim>
 		static inline void copy(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<newTy> arr_result)
@@ -610,6 +622,8 @@ namespace nw {
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of array
 		 * @return Pointer to NEW ARRAY
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class newTy, class Ty, size_t HiDim> _NODISCARD
 		static inline iterator<newTy> copy_new(iterator<Ty> arr, const index_high_type<HiDim>& size)
@@ -629,6 +643,8 @@ namespace nw {
 		 * @param <arr_result> - Pointer to result array
 		 * @param <pred> - Unary function that accepts an element and returns
 		 *                 a val convertible to bool
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class UnaryPredicate, size_t HiDim>
 		static inline void copy_if(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty> arr_result, UnaryPredicate pred)
@@ -648,6 +664,8 @@ namespace nw {
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of arrays
 		 * @param <arr2> - Pointer to array #2
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Ty2, size_t HiDim>
 		static inline void move(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty2> arr2)
@@ -667,6 +685,8 @@ namespace nw {
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of arrays
 		 * @param <arr2> - Pointer to array #2
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, size_t HiDim>
 		static inline void swap(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty> arr2)
@@ -689,6 +709,8 @@ namespace nw {
 		 * @param <arr_result> - Pointer to result array
 		 * @param <op> - Unary function that accepts an elements and
 		 *               returns value convertible to the type pointed to by <arr_result>
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class newTy, class Ty, class UnaryOperation, size_t HiDim>
 		static inline void transform(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<newTy> arr_result, UnaryOperation op)
@@ -712,6 +734,8 @@ namespace nw {
 		 * @param <op> - Unary function that accepts an elements and
 		 *               returns value convertible to the type pointed to by <arr_result>
 		 * @return Pointer to NEW ARRAY
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class newTy, class Ty, class UnaryOperation, size_t HiDim> _NODISCARD
 		static inline iterator<newTy> transform_new(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryOperation op)
@@ -733,6 +757,8 @@ namespace nw {
 		 * @param <arr_result> - Pointer to result array
 		 * @param <binary_op> - Binary function that accepts two elements and
 		 *                      returns value convertible to the type pointed to by <arr_result>
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class newTy, class Ty, class Ty2, class BinaryOperation, size_t HiDim>
 		static inline void transform(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty2> arr2, iterator<newTy> arr_result, BinaryOperation binary_op)
@@ -757,6 +783,8 @@ namespace nw {
 		 * @param <binary_op> - Binary function that accepts two elements and
 		 *                      returns value convertible to the type pointed to by <arr_result>
 		 * @return Pointer to NEW ARRAY
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class newTy, class Ty, class Ty2, class BinaryOperation, size_t HiDim> _NODISCARD
 		static inline iterator<newTy> transform_new(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty2> arr2, BinaryOperation binary_op)
@@ -775,6 +803,8 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <old_value> - Value to be replaced
 		 * @param <new_value> - Replacement value
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, size_t HiDim>
 		static inline void replace(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty& old_value, const Ty& new_value)
@@ -796,6 +826,8 @@ namespace nw {
 		 * @param <pred> - Unary function that accepts an element and returns
 		 *                 a val convertible to bool
 		 * @param <new_value> - Value to assign to replaced elements
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class UnaryPredicate, size_t HiDim>
 		static inline void replace_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred, const Ty& new_value)
@@ -818,6 +850,8 @@ namespace nw {
 		 * @param <arr_result> - Pointer to result array
 		 * @param <old_value> - Value to be replaced
 		 * @param <new_value> - Replacement value
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, size_t HiDim>
 		static inline void replace_copy(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty> arr_result, const Ty& old_value, const Ty& new_value)
@@ -841,6 +875,8 @@ namespace nw {
 		 * @param <pred> - Unary function that accepts an element and returns
 		 *                 a val convertible to bool
 		 * @param <new_value> - Value to assign to replaced elements
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class UnaryPredicate, size_t HiDim>
 		static inline void replace_copy_if(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty> arr_result, UnaryPredicate pred, const Ty& new_value)
@@ -860,6 +896,8 @@ namespace nw {
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of array
 		 * @param <val> - Value to assign
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, size_t HiDim>
 		static inline void fill(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty& val)
@@ -879,6 +917,8 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <val> - Value to assign
 		 * @return Pointer to NEW ARRAY
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, size_t HiDim> _NODISCARD
 		static inline iterator<Ty> fill_new(const index_high_type<HiDim>& size, const Ty& val)
@@ -898,6 +938,8 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <gen> - Generator function that is called with no arguments and 
 		 *                returns a value of a type convertible to those pointed by <arr>
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Generator, size_t HiDim>
 		static inline void generate(iterator<Ty> arr, const index_high_type<HiDim>& size, Generator gen)
@@ -913,12 +955,14 @@ namespace nw {
 
 		/*
 		 * Assigns the value returned by successive calls to <gen> to the
-		 * elements in NEW ARRAY.
+		 * elements in NEW ARRAY. 
 		 *
 		 * @param <size> - Size of array
 		 * @param <gen> - Generator function that is called with no arguments and
 		 *                returns a value of a type convertible to those pointed by <arr>
 		 * @return Pointer to NEW ARRAY
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Generator, size_t HiDim> _NODISCARD
 		static inline iterator<Ty> generate_new(const index_high_type<HiDim>& size, Generator gen)
@@ -956,6 +1000,8 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <gen> - Generator function that is called with a position arguments and
 		 *                returns a value of a type convertible to those pointed by <arr>
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Generator, size_t HiDim>
 		static inline void generate_i(iterator<Ty> arr, const index_high_type<HiDim>& size, Generator gen)
@@ -974,6 +1020,8 @@ namespace nw {
 		 * @param <gen> - Generator function that is called with a position arguments and
 		 *                returns a value of a type convertible to those pointed by <arr>
 		 * @return Pointer to NEW ARRAY
+		 * 
+		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Generator, size_t HiDim> _NODISCARD
 		static inline iterator<Ty> generate_i_new(const index_high_type<HiDim>& size, Generator gen)
