@@ -8,14 +8,7 @@
 namespace nw {
 
     template <class Ty>
-    class _Consumer_Reset : public Consumer<Ty>
-    {
-    public:
-        virtual void reset(const Ty& value) = 0;
-    };
-
-    template <class Ty>
-    class MinReducer : public _Consumer_Reset<Ty>
+    class MinReducer : public Consumer_Reset<Ty>
     {
     protected:
         Ty _min;
@@ -43,7 +36,7 @@ namespace nw {
     };
 
     template <class Ty>
-    class MaxReducer : public _Consumer_Reset<Ty>
+    class MaxReducer : public Consumer_Reset<Ty>
     {
     protected:
         Ty _max;
@@ -96,29 +89,6 @@ namespace nw {
         {
             MinReducer<Ty>::consume(value);
             MaxReducer<Ty>::consume(value);
-        }
-    };
-
-    template <class Ty>
-    class SumReducer : public _Consumer_Reset<Ty>
-    {
-    protected:
-        Ty _sum;
-
-    public:
-        SumReducer(const Ty& value = Ty(0))
-        {
-            this->reset(value);
-        }
-
-        void reset(const Ty& value = Ty(0))
-        {
-            _sum = value;
-        }
-
-        void consume(const Ty& value)
-        {
-            _sum = _sum + value;
         }
     };
 
