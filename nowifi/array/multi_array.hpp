@@ -47,13 +47,6 @@ namespace nw {
 		//Array size / position type
 		using index_type = index_high_type<Dim>;
 
-
-		template <size_t HiDim>
-		using assert_high_dim = compile_assert<(HiDim >= Dim)>;
-
-		template <size_t Layer>
-		using assert_low_dim = compile_assert<(Layer <= Dim)>;
-
 		static inline constexpr size_t depth()
 		{
 			return Dim;
@@ -1029,12 +1022,6 @@ namespace nw {
 		//Array size / position type
 		using index_type = index_high_type<1>;
 
-	    template <size_t HiDim>
-		using assert_high_dim = compile_assert<(HiDim >= 1U)>;
-
-		template <size_t Layer>
-		using assert_low_dim = compile_assert<(Layer <= 1U)>;
-
 		static inline constexpr size_t depth()
 		{
 			return 1;
@@ -1079,11 +1066,11 @@ namespace nw {
 		 * @return **See above**
 		 */
 		template <class Ty, size_t HiDim>
-		static inline Ty& get(iterator<Ty> arr, const index_high_type<HiDim>& size)
+		static inline Ty& get(iterator<Ty> arr, const index_high_type<HiDim>& pos)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
 
-			return arr[size[HiDim - 1]];
+			return arr[pos[HiDim - 1]];
 		}
 
 		/*
@@ -1094,11 +1081,11 @@ namespace nw {
 		 * @return **See above**
 		 */
 		template <class Ty, size_t HiDim>
-		static inline const Ty& get_const(iterator<Ty> arr, const index_high_type<HiDim>& size)
+		static inline const Ty& get_const(iterator<Ty> arr, const index_high_type<HiDim>& pos)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
 
-			return arr[size[HiDim - 1]];
+			return arr[pos[HiDim - 1]];
 		}
 
 		//-------------------- Non-modifying sequence operations --------------------//
