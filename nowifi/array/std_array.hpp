@@ -1,10 +1,10 @@
 #pragma once
 
+#include <nowifi/compiler/assert.hpp>
+
 #include <array>
 #include <tuple>
 #include <memory>
-
-#include <nowifi/compiler/assert.hpp>
 
 namespace nw {
 
@@ -440,7 +440,7 @@ namespace nw {
 		template <class Ty, size_t size>
 		std::array<Ty, size> clone_from(const Ty* src)
 		{
-			std::array<Ty, size> src;
+			std::array<Ty, size> result;
 			std::copy_n(src, size, src.begin());
 			return src;
 		}
