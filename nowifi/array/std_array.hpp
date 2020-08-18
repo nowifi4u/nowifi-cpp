@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nowifi/compiler/assert.hpp>
+#include <nowifi/compiler/loop.hpp>
 
 #include <array>
 #include <tuple>
@@ -15,6 +16,114 @@ namespace nw {
 
 		template <class Ty, size_t size>
 		using array_constref = std::array<const Ty&, size>;
+
+		////////////////////////////////             ////////////////////////////////
+		//------------------------------             ------------------------------//
+		//------------------------------     STL     ------------------------------//
+		//------------------------------             ------------------------------//
+		////////////////////////////////             ////////////////////////////////
+
+		//-------------------- Non-modifying sequence operations --------------------//
+
+		template <class Ty, size_t size>
+		bool all_of(const std::array<Ty, size>& src, const Ty& val)
+		{
+			return !for_loop_any_i<size>::call(
+				[&src, &val](size_t idx)
+			{
+				return src[idx] != val;
+			});
+		}
+
+		template <class Ty, size_t size>
+		bool any_of(const std::array<Ty, size>& src, const Ty& val)
+		{
+			return for_loop_any_i<size>::call(
+				[&src, &val](size_t idx)
+			{
+				return src[idx] == val;
+			});
+		}
+
+		template <class Ty, size_t size>
+		bool none_of(const std::array<Ty, size>& src, const Ty& val)
+		{
+			return !for_loop_any_i<size>::call(
+				[&src, &val](size_t idx)
+			{
+				return src[idx] == val;
+			});
+		}
+
+		template <class Ty, size_t size, class Function>
+		void for_each(std::array<Ty, size>& src, Function fn)
+		{
+			for_loop_i<size>::call(
+				[&src, &fn](size_t idx)
+			{
+				fn(src[idx]);
+			});
+		}
+
+		template <class Ty, size_t size, class Function>
+		void for_each_i(std::array<Ty, size>& src, Function fn)
+		{
+			for_loop_i<size>::call(
+				[&src, &fn](size_t idx)
+			{
+				fn(src[idx], idx);
+			});
+		}
+
+		template <class Ty, size_t size>
+		Ty* find(std::array<Ty, size>& src, const Ty& val)
+		{
+			return for_loop_any_ptr_i<size>::template call<Ty*>(
+				[&src, &val](size_t idx)
+			{
+				return (src[idx] == val ? &src[idx] : nullptr);
+			});
+		}
+
+		template <class Ty, size_t size, class UnaryPredicate>
+		Ty* find_if(std::array<Ty, size>& src, UnaryPredicate pred)
+		{
+			return for_loop_any_ptr_i<size>::template call<Ty*>(
+				[&src, &pred](size_t idx)
+			{
+				return (pred(src[idx]) ? &src[idx] : nullptr);
+			});
+		}
+
+		template <class Ty, size_t size, class UnaryPredicate>
+		Ty* find_if_not(std::array<Ty, size>& src, UnaryPredicate pred)
+		{
+			return for_loop_any_ptr_i<size>::template call<Ty*>(
+				[&src, &pred](size_t idx)
+			{
+				return (pred(src[idx]) ? nullptr : &src[idx]);
+			});
+		}
+
+		template <class Ty, size_t size>
+		size_t count(const std::array<Ty, size>& src, const Ty& val)
+		{
+			return for_loop_reduce_i<size>::template call<size_t>(0U,
+				[&src](size_t idx)
+			{
+				return src[idx];
+			},
+				[&val](size_t result, const Ty& v)
+			{
+				return result + (v == val);
+			});
+		}
+
+		////////////////////////////////             ////////////////////////////////
+		//------------------------------             ------------------------------//
+		//------------------------------    CONCAT   ------------------------------//
+		//------------------------------             ------------------------------//
+		////////////////////////////////             ////////////////////////////////
 
 		//-------------------- concat arrays --------------------//
 
@@ -159,108 +268,18 @@ namespace nw {
 			return concat<Ty, size, 4>(std::array<const Ty&, 4>{ value1, value2, value3, value4 }, src);
 		}
 
-		//-------------------- concat values --------------------//
-
-		template <class Ty, size_t size>
-		std::array<Ty, size> concat(const array_constref<Ty, size>& src)
-		{
-			std::array<Ty, size> arr;
-			std::copy_n(src.begin(), size, arr.begin());
-			return arr;
-		}
-
-		template <class Ty>
-		std::array<Ty, 1> concat(
-			const Ty& value1)
-		{
-			return concat<Ty, 1>(array_constref<Ty, 1>{ value1 });
-		}
-
-		template <class Ty>
-		std::array<Ty, 2> concat(
-			const Ty& value1,
-			const Ty& value2)
-		{
-			return concat<Ty, 2>(array_constref<Ty, 2>{ value1, value2 });
-		}
-
-		template <class Ty>
-		std::array<Ty, 3> concat(
-			const Ty& value1,
-			const Ty& value2,
-			const Ty& value3)
-		{
-			return concat<Ty, 3>(array_constref<Ty, 3>{ value1, value2, value3 });
-		}
-
-		template <class Ty>
-		std::array<Ty, 4> concat(
-			const Ty& value1,
-			const Ty& value2,
-			const Ty& value3,
-			const Ty& value4)
-		{
-			return concat<Ty, 4>(array_constref<Ty, 4>{ value1, value2, value3, value4 });
-		}
-
-		template <class Ty>
-		std::array<Ty, 5> concat(
-			const Ty& value1,
-			const Ty& value2,
-			const Ty& value3,
-			const Ty& value4,
-			const Ty& value5)
-		{
-			return concat<Ty, 5>(array_constref<Ty, 5>{ value1, value2, value3, value4, value5 });
-		}
-
-		template <class Ty>
-		std::array<Ty, 6> concat(
-			const Ty& value1,
-			const Ty& value2,
-			const Ty& value3,
-			const Ty& value4,
-			const Ty& value5,
-			const Ty& value6)
-		{
-			return concat<Ty, 6>(array_constref<Ty, 6>{ value1, value2, value3, value4, value5, value6 });
-		}
-
-		template <class Ty>
-		std::array<Ty, 7> concat(
-			const Ty& value1,
-			const Ty& value2,
-			const Ty& value3,
-			const Ty& value4,
-			const Ty& value5,
-			const Ty& value6,
-			const Ty& value7)
-		{
-			return concat<Ty, 7>(array_constref<Ty, 7>{ value1, value2, value3, value4, value5, value6, value7 });
-		}
-
-		template <class Ty>
-		std::array<Ty, 8> concat(
-			const Ty& value1,
-			const Ty& value2,
-			const Ty& value3,
-			const Ty& value4,
-			const Ty& value5,
-			const Ty& value6,
-			const Ty& value7,
-			const Ty& value8)
-		{
-			return concat<Ty, 8>(array_constref<Ty, 8>{ value1, value2, value3, value4, value5, value6, value7, value8 });
-		}
-
-		//-------------------- cut --------------------//
+		////////////////////////////////             ////////////////////////////////
+		//------------------------------             ------------------------------//
+		//------------------------------      CUT    ------------------------------//
+		//------------------------------             ------------------------------//
+		////////////////////////////////             ////////////////////////////////
 
 		template <size_t delta, class Ty, size_t size>
 		void cut_back(
 			const std::array<Ty, size>& src,
 			std::array<Ty, delta>& arr1)
 		{
-			compile_assert<(size >= delta)>::assert(); // delta argument too big
+			static_assert(size >= delta, "Template <delta> too big");
 
 			std::copy_n(src.begin(), delta, arr1.begin());
 		}
@@ -269,7 +288,7 @@ namespace nw {
 		std::array<Ty, delta> cut_back(
 			const std::array<Ty, size>& src)
 		{
-			compile_assert<(size >= delta)>::assert(); // delta argument too big
+			static_assert(size >= delta, "Template <delta> too big");
 
 			std::array<Ty, delta> arr1;
 
@@ -283,7 +302,7 @@ namespace nw {
 			const std::array<Ty, size>& src,
 			std::array<Ty, delta>& arr1)
 		{
-			compile_assert<(size >= delta)>::assert(); // delta argument too big
+			static_assert(size >= delta, "Template <delta> too big");
 
 			auto begin = src.begin() + delta;
 			std::copy_n(begin, size - delta, arr1.begin());
@@ -304,7 +323,7 @@ namespace nw {
 			std::array<Ty, delta>& arr1,
 			std::array<Ty, size - delta>& arr2)
 		{
-			compile_assert<(size >= delta)>::assert(); // delta argument too big
+			static_assert(size >= delta, "Template <delta> too big");
 
 			auto joint = std::copy_n(src.begin(), delta, arr1.begin());
 			/*         */std::copy_n(joint, size - delta, arr2.begin());
@@ -317,7 +336,7 @@ namespace nw {
 			const std::array<Ty, size>& src,
 			array_ref<Ty, delta> output)
 		{
-			compile_assert<(size >= delta)>::assert(); // delta argument too big
+			static_assert(size >= delta, "Template <delta> too big");
 
 			std::copy_n(src.begin(), delta, output.begin());
 
@@ -370,7 +389,7 @@ namespace nw {
 			array_ref<Ty, delta>& output,
 			const std::array<Ty, size>& src)
 		{
-			compile_assert<(size >= delta)>::assert(); // delta argument too big
+			static_assert(size >= delta, "Template <delta> too big");
 
 			auto pivot = src.begin() + delta;
 
@@ -449,29 +468,6 @@ namespace nw {
 		std::array<Ty, size> clone_from(const std::unique_ptr<Ty>& src)
 		{
 			return clone_from<Ty, size>(src.get());
-		}
-
-		//-------------------- create --------------------//
-
-		template <class Ty, size_t size>
-		void _impl_create(std::array<Ty, size>& arr, const Ty& arg1)
-		{
-			arr[size - 1] = arg1;
-		}
-
-		template <class Ty, size_t size, class... Args>
-		void _impl_create(std::array<Ty, size>& arr, const Ty& arg1, const Args&... args)
-		{
-			arr[size - 1 - sizeof...(args)] = arg1;
-			return _impl_create(arr, args...);
-		}
-
-		template <class Ty, size_t size, class... Args>
-		std::array<Ty, size> create(const Args&... args)
-		{
-			std::array<Ty, size> arr;
-			_impl_create(arr, args...);
-			return arr;
 		}
 
 	} // namespace std_array

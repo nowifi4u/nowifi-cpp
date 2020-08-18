@@ -3,12 +3,8 @@
 #include <nowifi/compiler/class.hpp>
 #include <nowifi/array/std_array.hpp>
 #include <nowifi/compiler/assert.hpp>
-#include <initializer_list>
 
 namespace nw {
-
-	template <size_t Dim>
-	class multi_array;
 
 	////////////////////////////////             ////////////////////////////////
 	//------------------------------             ------------------------------//
@@ -1084,7 +1080,7 @@ namespace nw {
 		 * @param <size> - Size of NEW ARRAY
 		 * @return Pointer to NEW ARRAY
 		 */
-		template <class Ty, size_t HiDim>
+		template <class Ty, size_t HiDim> _NODISCARD
 		static inline iterator<Ty> allocate(const index_high_type<HiDim>& size)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1113,7 +1109,7 @@ namespace nw {
 		 * @param <pos> - Position of item
 		 * @return **See above**
 		 */
-		template <class Ty, size_t HiDim>
+		template <class Ty, size_t HiDim> _NODISCARD
 		static inline Ty& get(iterator<Ty> arr, const index_high_type<HiDim>& pos)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1128,7 +1124,7 @@ namespace nw {
 		 * @param <pos> - Position of item
 		 * @return **See above**
 		 */
-		template <class Ty, size_t HiDim>
+		template <class Ty, size_t HiDim> _NODISCARD
 		static inline const Ty& get_const(iterator<Ty> arr, const index_high_type<HiDim>& pos)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1148,7 +1144,7 @@ namespace nw {
 		 *                 and returns a val convertible to bool
 		 * @return **See above**
 		 */
-		template <class Ty, class UnaryPredicate, size_t HiDim>
+		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD
 		static inline bool all_of(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1165,7 +1161,7 @@ namespace nw {
 		 * @param <pred> - Unary function that accepts an element
 		 *                 and returns a val convertible to bool
 		 */
-		template <class Ty, class UnaryPredicate, size_t HiDim>
+		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD
 		static inline bool any_of(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1182,7 +1178,7 @@ namespace nw {
 		 *                 and returns a val convertible to bool
 		 * @return **See above**
 		 */
-		template <class Ty, class UnaryPredicate, size_t HiDim>
+		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD
 		static inline bool none_of(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1315,7 +1311,7 @@ namespace nw {
 		 * @param <val> - Value to search for
 		 * @return **See above**
 		 */
-		template <class Ty, class Ty2, size_t HiDim>
+		template <class Ty, class Ty2, size_t HiDim> _NODISCARD
 		static inline Ty* find(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty2& val)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1369,7 +1365,7 @@ namespace nw {
 		 *                 a val convertible to bool
 		 * @return **See above**
 		 */
-		template <class Ty, class UnaryPredicate, size_t HiDim>
+		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD
 		static inline Ty* find_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1424,7 +1420,7 @@ namespace nw {
 		 *                 a val convertible to bool
 		 * @return **See above**
 		 */
-		template <class Ty, class UnaryPredicate, size_t HiDim>
+		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD
 		static inline Ty* find_if_not(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1448,7 +1444,7 @@ namespace nw {
 		 * @param <val> - Value to match
 		 * @return **See above**
 		 */
-		template <class Ty, class Ty2, size_t HiDim>
+		template <class Ty, class Ty2, size_t HiDim> _NODISCARD
 		static inline size_t count(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty2& val)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1465,7 +1461,7 @@ namespace nw {
 		 *                 a val convertible to bool
 		 * @return **See above**
 		 */
-		template <class Ty, class UnaryPredicate, size_t HiDim>
+		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD
 		static inline size_t count_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1507,7 +1503,7 @@ namespace nw {
 		 * @param <arr2> - Pointer to array #2
 		 * @return **See above**
 		 */
-		template <class Ty, class Ty2, size_t HiDim>
+		template <class Ty, class Ty2, size_t HiDim> _NODISCARD
 		static inline Ty* mismatch(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty2> arr2)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1529,7 +1525,7 @@ namespace nw {
 		 * @param <arr2> - Pointer to array #2
 		 * @return **See above**
 		 */
-		template <class Ty, class Ty2, size_t HiDim>
+		template <class Ty, class Ty2, size_t HiDim> _NODISCARD
 		static inline bool equal(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty2> arr2)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1562,7 +1558,7 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @return Pointer to NEW ARRAY
 		 */
-		template <class newTy, class Ty, size_t HiDim>
+		template <class newTy, class Ty, size_t HiDim> _NODISCARD
 		static inline iterator<newTy> copy_new(iterator<Ty> arr, const index_high_type<HiDim>& size)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1650,7 +1646,7 @@ namespace nw {
 		 *               returns value convertible to the type pointed to by <arr_result>
 		 * @return Pointer to NEW ARRAY
 		 */
-		template <class newTy, class Ty, class UnaryOperation, size_t HiDim>
+		template <class newTy, class Ty, class UnaryOperation, size_t HiDim> _NODISCARD
 		static inline iterator<newTy> transform_new(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryOperation op)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1691,7 +1687,7 @@ namespace nw {
 		 *                      returns value convertible to the type pointed to by <arr_result>
 		 * @return Pointer to NEW ARRAY
 		 */
-		template <class newTy, class Ty, class Ty2, class BinaryOperation, size_t HiDim>
+		template <class newTy, class Ty, class Ty2, class BinaryOperation, size_t HiDim> _NODISCARD
 		static inline iterator<newTy> transform_new(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty2> arr2, BinaryOperation binary_op)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1793,7 +1789,7 @@ namespace nw {
 		 * @param <val> - Value to assign
 		 * @return Pointer to NEW ARRAY
 		 */
-		template <class Ty, size_t HiDim>
+		template <class Ty, size_t HiDim> _NODISCARD
 		static inline iterator<Ty> fill_new(const index_high_type<HiDim>& size, const Ty& val)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1832,7 +1828,7 @@ namespace nw {
 		 *                returns a value of a type convertible to those pointed by <arr>
 		 * @return Pointer to NEW ARRAY
 		 */
-		template <class Ty, class Generator, size_t HiDim>
+		template <class Ty, class Generator, size_t HiDim> _NODISCARD
 		static inline iterator<Ty> generate_new(const index_high_type<HiDim>& size, Generator gen)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1886,7 +1882,7 @@ namespace nw {
 		 *                returns a value of a type convertible to those pointed by <arr>
 		 * @return Pointer to NEW ARRAY
 		 */
-		template <class Ty, class Generator, size_t HiDim>
+		template <class Ty, class Generator, size_t HiDim> _NODISCARD
 		static inline iterator<Ty> generate_i_new(const index_high_type<HiDim>& size, Generator gen)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
@@ -1928,12 +1924,6 @@ namespace nw {
 
 		using index_type = index_high_type<0>;
 
-		template <size_t HiDim>
-		using assert_high_dim = compile_assert<(HiDim >= 0U)>;
-
-		template <size_t Layer>
-		using assert_low_dim = compile_assert<(Layer <= 0U)>;
-
 	public:
 
 		using index_type = index_high_type<0>;
@@ -1966,13 +1956,13 @@ namespace nw {
 	//------------------------------                ------------------------------//
 
 
-	using Array1D = multi_array<1>;
-	using Array2D = multi_array<2>;
-	using Array3D = multi_array<3>;
-	using Array4D = multi_array<4>;
-	using Array5D = multi_array<5>;
-	using Array6D = multi_array<6>;
-	using Array7D = multi_array<7>;
-	using Array8D = multi_array<8>;
+	using multi_array1D = multi_array<1>;
+	using multi_array2D = multi_array<2>;
+	using multi_array3D = multi_array<3>;
+	using multi_array4D = multi_array<4>;
+	using multi_array5D = multi_array<5>;
+	using multi_array6D = multi_array<6>;
+	using multi_array7D = multi_array<7>;
+	using multi_array8D = multi_array<8>;
 
 } // namespace nw
