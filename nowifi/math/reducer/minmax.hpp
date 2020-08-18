@@ -64,7 +64,7 @@ namespace nw {
     };
 
     template <class Ty>
-    class MinMaxReducer : public virtual MinReducer<Ty>, public virtual MaxReducer<Ty>
+    class MinMaxReducer : virtual public MinReducer<Ty>, virtual public MaxReducer<Ty>
     {
     public:
         MinMaxReducer(const Ty& value)
