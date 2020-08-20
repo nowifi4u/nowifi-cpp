@@ -241,7 +241,6 @@ namespace nw {
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 			static_assert(HiDim2 >= Dim, "Parameter <size> too small");
 
-#pragma omp parallel for private(pos)
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				pos[HiDim2 - Dim] = idx;
@@ -258,8 +257,6 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <fn> - Unary function that accepts an element and
 		 *               its position as arguments
-		 * 
-		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Function_i, size_t HiDim>
 		static inline void for_each_i(iterator<Ty> arr, const index_high_type<HiDim>& size, Function_i fn)
@@ -278,8 +275,6 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <fn> - Unary function that accepts an element and
 		 *               its position as arguments
-		 * 
-		 * @exception #pragma omp parallel for
 		 */
 		template <size_t Layer, class Ty, class Function, size_t HiDim>
 		static inline void for_each_i_layer(iterator<Ty> arr, const index_high_type<HiDim>& size, Function fn)
@@ -978,7 +973,6 @@ namespace nw {
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 			static_assert(HiDim2 >= Dim, "Parameter <size> too small");
 
-#pragma omp parallel for
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
 				pos[HiDim2 - Dim] = idx;
@@ -996,8 +990,6 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <gen> - Generator function that is called with a position arguments and
 		 *                returns a value of a type convertible to those pointed by <arr>
-		 * 
-		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Generator, size_t HiDim>
 		static inline void generate_i(iterator<Ty> arr, const index_high_type<HiDim>& size, Generator gen)
@@ -1016,8 +1008,6 @@ namespace nw {
 		 * @param <gen> - Generator function that is called with a position arguments and
 		 *                returns a value of a type convertible to those pointed by <arr>
 		 * @return Pointer to NEW ARRAY
-		 * 
-		 * @exception #pragma omp parallel for
 		 */
 		template <class Ty, class Generator, size_t HiDim> _NODISCARD
 		static inline iterator<Ty> generate_i_new(const index_high_type<HiDim>& size, Generator gen)

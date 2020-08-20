@@ -56,7 +56,7 @@ namespace nw {
 			return this->result < second.result;
 		}
 
-		bool eq(const FuncIterator_type& second) const 
+		bool equal(const FuncIterator_type& second) const 
 		{
 			return this->result == second.result;
 		}
@@ -103,11 +103,11 @@ namespace nw {
 	public:
 
 		bool operator==(const FuncIterator_type& second) const {
-			return this->lt(second) || this->eq(second);
+			return this->lt(second) || this->equal(second);
 		}
 
 		bool operator!=(const FuncIterator_type& second) const {
-			return !this->lt(second) && !this->eq(second);
+			return !this->lt(second) && !this->equal(second);
 		}
 
 	}; // class FuncIterator_Backward

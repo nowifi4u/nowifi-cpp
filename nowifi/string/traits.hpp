@@ -7,7 +7,7 @@ namespace nw {
 	template <typename charTy, charTy(*Fun)(charTy)>
 	struct basic_insensitive_char_traits : public std::char_traits<charTy>
 	{
-		static inline bool eq(charTy ch1, charTy ch2) { return Fun(ch1) == Fun(ch2); }
+		static inline bool equal(charTy ch1, charTy ch2) { return Fun(ch1) == Fun(ch2); }
 		static inline bool lt(charTy ch1, charTy ch2) { return Fun(ch1) < Fun(ch2); }
 		static inline bool gt(charTy ch1, charTy ch2) { return Fun(ch1) > Fun(ch2); }
 
@@ -23,7 +23,7 @@ namespace nw {
 
 		static const charTy* find(const charTy* str, int n, charTy ch)
 		{
-			while (n-- > 0 && !eq(*str, ch)) {
+			while (n-- > 0 && !equal(*str, ch)) {
 				++str;
 			}
 			return str;

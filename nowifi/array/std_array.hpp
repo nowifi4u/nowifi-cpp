@@ -2,6 +2,7 @@
 
 #include <nowifi/compiler/assert.hpp>
 #include <nowifi/compiler/loop.hpp>
+#include <nowifi/pack/compare.hpp>
 
 #include <array>
 #include <tuple>
@@ -28,7 +29,7 @@ namespace nw {
 		template <class Ty, size_t size>
 		bool all_of(const std::array<Ty, size>& src, const Ty& val)
 		{
-			return !for_loop_any_i<size>::call(
+			return !for_loop::any_i<size>::call(
 				[&src, &val](size_t idx)
 			{
 				return src[idx] != val;
@@ -38,7 +39,7 @@ namespace nw {
 		template <class Ty, size_t size>
 		bool any_of(const std::array<Ty, size>& src, const Ty& val)
 		{
-			return for_loop_any_i<size>::call(
+			return for_loop::any_i<size>::call(
 				[&src, &val](size_t idx)
 			{
 				return src[idx] == val;
@@ -48,7 +49,7 @@ namespace nw {
 		template <class Ty, size_t size>
 		bool none_of(const std::array<Ty, size>& src, const Ty& val)
 		{
-			return !for_loop_any_i<size>::call(
+			return !for_loop::any_i<size>::call(
 				[&src, &val](size_t idx)
 			{
 				return src[idx] == val;
@@ -58,7 +59,7 @@ namespace nw {
 		template <class Ty, size_t size, class Function>
 		void for_each(std::array<Ty, size>& src, Function fn)
 		{
-			for_loop_i<size>::call(
+			for_loop::raw_i<size>::call(
 				[&src, &fn](size_t idx)
 			{
 				fn(src[idx]);
@@ -68,7 +69,7 @@ namespace nw {
 		template <class Ty, size_t size, class Function>
 		void for_each_i(std::array<Ty, size>& src, Function fn)
 		{
-			for_loop_i<size>::call(
+			for_loop::raw_i<size>::call(
 				[&src, &fn](size_t idx)
 			{
 				fn(src[idx], idx);
@@ -78,7 +79,7 @@ namespace nw {
 		template <class Ty, size_t size>
 		Ty* find(std::array<Ty, size>& src, const Ty& val)
 		{
-			return for_loop_any_ptr_i<size>::template call<Ty*>(
+			return for_loop::any_ptr_i<size>::template call<Ty*>(
 				[&src, &val](size_t idx)
 			{
 				return (src[idx] == val ? &src[idx] : nullptr);
@@ -88,7 +89,7 @@ namespace nw {
 		template <class Ty, size_t size, class UnaryPredicate>
 		Ty* find_if(std::array<Ty, size>& src, UnaryPredicate pred)
 		{
-			return for_loop_any_ptr_i<size>::template call<Ty*>(
+			return for_loop::any_ptr_i<size>::template call<Ty*>(
 				[&src, &pred](size_t idx)
 			{
 				return (pred(src[idx]) ? &src[idx] : nullptr);
@@ -98,7 +99,7 @@ namespace nw {
 		template <class Ty, size_t size, class UnaryPredicate>
 		Ty* find_if_not(std::array<Ty, size>& src, UnaryPredicate pred)
 		{
-			return for_loop_any_ptr_i<size>::template call<Ty*>(
+			return for_loop::any_ptr_i<size>::template call<Ty*>(
 				[&src, &pred](size_t idx)
 			{
 				return (pred(src[idx]) ? nullptr : &src[idx]);
@@ -108,7 +109,7 @@ namespace nw {
 		template <class Ty, size_t size>
 		size_t count(const std::array<Ty, size>& src, const Ty& val)
 		{
-			return for_loop_reduce_i<size>::template call<size_t>(0U,
+			return for_loop::reduce_i<size>::template call<size_t>(0U,
 				[&src](size_t idx)
 			{
 				return src[idx];
@@ -277,20 +278,20 @@ namespace nw {
 		template <size_t delta, class Ty, size_t size>
 		void cut_back(
 			const std::array<Ty, size>& src,
-			std::array<Ty, delta>& arr1)
+			std::array<Ty, size - delta>& arr1)
 		{
 			static_assert(size >= delta, "Template <delta> too big");
 
-			std::copy_n(src.begin(), delta, arr1.begin());
+			std::copy_n(src.begin(), size - delta, arr1.begin());
 		}
 
 		template <size_t delta, class Ty, size_t size>
-		std::array<Ty, delta> cut_back(
+		std::array<Ty, size - delta> cut_back(
 			const std::array<Ty, size>& src)
 		{
 			static_assert(size >= delta, "Template <delta> too big");
 
-			std::array<Ty, delta> arr1;
+			std::array<Ty, size - delta> arr1;
 
 			cut_back<delta, Ty, size>(src, arr1);
 
@@ -300,7 +301,7 @@ namespace nw {
 		template <size_t delta, class Ty, size_t size>
 		void cut_front(
 			const std::array<Ty, size>& src,
-			std::array<Ty, delta>& arr1)
+			std::array<Ty, size - delta>& arr1)
 		{
 			static_assert(size >= delta, "Template <delta> too big");
 
@@ -309,10 +310,10 @@ namespace nw {
 		}
 
 		template <size_t delta, class Ty, size_t size>
-		std::array<Ty, delta> cut_front(
+		std::array<Ty, size - delta> cut_front(
 			const std::array<Ty, size>& src)
 		{
-			std::array<Ty, delta> arr;
+			std::array<Ty, size - delta> arr;
 			cut_front<delta, Ty, size>(src, arr);
 			return arr;
 		}
@@ -468,6 +469,29 @@ namespace nw {
 		std::array<Ty, size> clone_from(const std::unique_ptr<Ty>& src)
 		{
 			return clone_from<Ty, size>(src.get());
+		}
+
+		//-------------------- comparison --------------------//
+
+		template <class Ty, size_t size1, size_t size2>
+		int compare_common(const std::array<Ty, size1>& src1, const std::array<Ty, size2>& src2)
+		{
+			constexpr size_t size_min = Compare::min(size1, size2);
+			return for_loop::any_int_i<size_min>::call([&src1, &src2](size_t idx)
+			{
+				if (src1[idx] < src2[idx]) return -1;
+				else if (src1[idx] == src2[idx]) return 0;
+				else /* src1[idx] > src2[idx] */ return 1;
+			});
+		}
+
+		template <class Ty, size_t size1, size_t size2>
+		int compare_lexicographical(const std::array<Ty, size1>& src1, const std::array<Ty, size2>& src2)
+		{
+			const int cmp = compare_common(src1, src2);
+			if (cmp != 0) return cmp;
+			else return (int)size1 - size2;
+
 		}
 
 	} // namespace std_array
