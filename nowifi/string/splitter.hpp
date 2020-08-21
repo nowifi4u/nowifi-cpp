@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <sstream>
 #include <vector>
 
 namespace nw {
@@ -24,7 +24,7 @@ namespace nw {
 			return std::getline<charTy>(stream, token, sep) ? true : false;
 		}
 
-		string_type cut_force() {
+		string_type cut_return() {
 			string_type token;
 			this->cut(token);
 			return token;

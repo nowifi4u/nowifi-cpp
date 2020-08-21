@@ -238,10 +238,10 @@ namespace nw {
 		template <size_t N>
 		struct any_int
 		{
-			template <class Ty, class Func>
+			template <class Func>
 			static inline int call(Func const& fun)
 			{
-				Ty result = any_int<N - 1>::template call<Ty>(fun);
+				int result = any_int<N - 1>::call(fun);
 				if (result != 0) return result;
 				return fun();
 			}
@@ -250,7 +250,7 @@ namespace nw {
 		template <>
 		struct any_int <0U>
 		{
-			template <class Ty, class Func>
+			template <class Func>
 			static inline int call(Func const& fun)
 			{
 				return 0;
@@ -267,10 +267,10 @@ namespace nw {
 		template <size_t N>
 		struct any_int_i
 		{
-			template <class Ty, class Func>
+			template <class Func>
 			static inline int call(Func const& fun)
 			{
-				Ty result = any_int_i<N - 1>::template call<Ty>(fun);
+				int result = any_int_i<N - 1>::call(fun);
 				if (result != 0) return result;
 				return fun(N - 1);
 			}
@@ -279,7 +279,7 @@ namespace nw {
 		template <>
 		struct any_int_i <0U>
 		{
-			template <class Ty, class Func>
+			template <class Func>
 			static inline int call(Func const& fun)
 			{
 				return 0;

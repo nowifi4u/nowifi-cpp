@@ -26,7 +26,7 @@ namespace nw {
 
 		//-------------------- Non-modifying sequence operations --------------------//
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		bool all_of(const std::array<Ty, size>& src, const Ty& val)
 		{
 			return !for_loop::any_i<size>::call(
@@ -36,7 +36,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		bool any_of(const std::array<Ty, size>& src, const Ty& val)
 		{
 			return for_loop::any_i<size>::call(
@@ -46,7 +46,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		bool none_of(const std::array<Ty, size>& src, const Ty& val)
 		{
 			return !for_loop::any_i<size>::call(
@@ -56,7 +56,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size, class Function>
+		template <class Ty, size_t size, class Function> inline
 		void for_each(std::array<Ty, size>& src, Function fn)
 		{
 			for_loop::raw_i<size>::call(
@@ -66,7 +66,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size, class Function>
+		template <class Ty, size_t size, class Function> inline
 		void for_each_i(std::array<Ty, size>& src, Function fn)
 		{
 			for_loop::raw_i<size>::call(
@@ -76,7 +76,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		Ty* find(std::array<Ty, size>& src, const Ty& val)
 		{
 			return for_loop::any_ptr_i<size>::template call<Ty*>(
@@ -86,7 +86,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size, class UnaryPredicate>
+		template <class Ty, size_t size, class UnaryPredicate> inline
 		Ty* find_if(std::array<Ty, size>& src, UnaryPredicate pred)
 		{
 			return for_loop::any_ptr_i<size>::template call<Ty*>(
@@ -96,7 +96,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size, class UnaryPredicate>
+		template <class Ty, size_t size, class UnaryPredicate> inline
 		Ty* find_if_not(std::array<Ty, size>& src, UnaryPredicate pred)
 		{
 			return for_loop::any_ptr_i<size>::template call<Ty*>(
@@ -106,7 +106,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		size_t count(const std::array<Ty, size>& src, const Ty& val)
 		{
 			return for_loop::reduce_i<size>::template call<size_t>(0U,
@@ -128,7 +128,7 @@ namespace nw {
 
 		//-------------------- concat arrays --------------------//
 
-		template <class Ty, size_t size1, size_t size2>
+		template <class Ty, size_t size1, size_t size2> inline
 		std::array<Ty, size1 + size2> concat(
 			const std::array<Ty, size1>& src1,
 			const std::array<Ty, size2>& src2)
@@ -139,7 +139,7 @@ namespace nw {
 			return src;
 		}
 
-		template <class Ty, size_t size1, size_t size2, size_t size3>
+		template <class Ty, size_t size1, size_t size2, size_t size3> inline
 		std::array<Ty, size1 + size2 + size3> concat(
 			const std::array<Ty, size1>& src1,
 			const std::array<Ty, size2>& src2,
@@ -152,7 +152,7 @@ namespace nw {
 			return src;
 		}
 
-		template <class Ty, size_t size1, size_t size2, size_t size3, size_t size4>
+		template <class Ty, size_t size1, size_t size2, size_t size3, size_t size4> inline
 		std::array<Ty, size1 + size2 + size3 + size4> concat(
 			const std::array<Ty, size1>& src1,
 			const std::array<Ty, size2>& src2,
@@ -169,7 +169,7 @@ namespace nw {
 
 		//-------------------- concat array + values --------------------//
 
-		template <class Ty, size_t size1, size_t size2>
+		template <class Ty, size_t size1, size_t size2> inline
 		std::array<Ty, size1 + size2> concat(
 			const std::array<Ty, size1>& src1,
 			const array_constref<Ty, size2>& src2)
@@ -180,7 +180,7 @@ namespace nw {
 			return src;
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size + 1> concat(
 			const std::array<Ty, size>& src,
 			const Ty& value1)
@@ -188,7 +188,7 @@ namespace nw {
 			return concat<Ty, size, 1>(src, std::array<const Ty&, 1>{ value1 });
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size + 2> concat(
 			const std::array<Ty, size>& src,
 			const Ty& value1,
@@ -197,7 +197,7 @@ namespace nw {
 			return concat<Ty, size, 2>(src, std::array<const Ty&, 2>{ value1, value2 });
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size + 3> concat(
 			const std::array<Ty, size>& src,
 			const Ty& value1,
@@ -207,7 +207,7 @@ namespace nw {
 			return concat<Ty, size, 3>(src, std::array<const Ty&, 3>{ value1, value2, value3 });
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size + 4> concat(
 			const std::array<Ty, size>& src,
 			const Ty& value1,
@@ -220,7 +220,7 @@ namespace nw {
 
 		//-------------------- concat values + array --------------------//
 
-		template <class Ty, size_t size1, size_t size2>
+		template <class Ty, size_t size1, size_t size2> inline
 		std::array<Ty, size1 + size2> concat(
 			const array_constref<Ty, size2>& src1,
 			const std::array<Ty, size1>& src2)
@@ -231,7 +231,7 @@ namespace nw {
 			return src;
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size + 1> concat(
 			const Ty& value1,
 			const std::array<Ty, size>& src)
@@ -239,7 +239,7 @@ namespace nw {
 			return concat<Ty, size, 1>(std::array<const Ty&, 1>{ value1 }, src);
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size + 2> concat(
 			const Ty& value1,
 			const Ty& value2,
@@ -248,7 +248,7 @@ namespace nw {
 			return concat<Ty, size, 2>(std::array<const Ty&, 2>{ value1, value2 }, src);
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size + 3> concat(
 			const Ty& value1,
 			const Ty& value2,
@@ -258,7 +258,7 @@ namespace nw {
 			return concat<Ty, size, 3>(std::array<const Ty&, 3>{ value1, value2, value3 }, src);
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size + 4> concat(
 			const Ty& value1,
 			const Ty& value2,
@@ -275,7 +275,7 @@ namespace nw {
 		//------------------------------             ------------------------------//
 		////////////////////////////////             ////////////////////////////////
 
-		template <size_t delta, class Ty, size_t size>
+		template <size_t delta, class Ty, size_t size> inline
 		void cut_back(
 			const std::array<Ty, size>& src,
 			std::array<Ty, size - delta>& arr1)
@@ -285,7 +285,7 @@ namespace nw {
 			std::copy_n(src.begin(), size - delta, arr1.begin());
 		}
 
-		template <size_t delta, class Ty, size_t size>
+		template <size_t delta, class Ty, size_t size> inline
 		std::array<Ty, size - delta> cut_back(
 			const std::array<Ty, size>& src)
 		{
@@ -298,7 +298,7 @@ namespace nw {
 			return arr1;
 		}
 
-		template <size_t delta, class Ty, size_t size>
+		template <size_t delta, class Ty, size_t size> inline
 		void cut_front(
 			const std::array<Ty, size>& src,
 			std::array<Ty, size - delta>& arr1)
@@ -309,7 +309,7 @@ namespace nw {
 			std::copy_n(begin, size - delta, arr1.begin());
 		}
 
-		template <size_t delta, class Ty, size_t size>
+		template <size_t delta, class Ty, size_t size> inline
 		std::array<Ty, size - delta> cut_front(
 			const std::array<Ty, size>& src)
 		{
@@ -318,7 +318,7 @@ namespace nw {
 			return arr;
 		}
 
-		template <size_t delta, class Ty, size_t size>
+		template <size_t delta, class Ty, size_t size> inline
 		void cut(
 			const std::array<Ty, size>& src,
 			std::array<Ty, delta>& arr1,
@@ -332,7 +332,7 @@ namespace nw {
 
 		//-------------------- pop_front --------------------//
 
-		template <size_t delta, class Ty, size_t size>
+		template <size_t delta, class Ty, size_t size> inline
 		std::array<Ty, size - delta> cut(
 			const std::array<Ty, size>& src,
 			array_ref<Ty, delta> output)
@@ -345,7 +345,7 @@ namespace nw {
 		}
 
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size - 1> cut(
 			const std::array<Ty, size>& src,
 			Ty& output1)
@@ -353,7 +353,7 @@ namespace nw {
 			return cut<1, Ty, size>(src, array_ref<Ty, 1>{ output1 });
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size - 2> cut(
 			const std::array<Ty, size>& src,
 			Ty& output1,
@@ -362,7 +362,7 @@ namespace nw {
 			return cut<2, Ty, size>(src, array_ref<Ty, 2>{ output1, output2 });
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size - 3> cut(
 			const std::array<Ty, size>& src,
 			Ty& output1,
@@ -372,7 +372,7 @@ namespace nw {
 			return cut<3, Ty, size>(src, array_ref<Ty, 3>{ output1, output2, output3 });
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size - 4> cut(
 			const std::array<Ty, size>& src,
 			Ty& output1,
@@ -385,7 +385,7 @@ namespace nw {
 
 		//-------------------- pop_back --------------------//
 
-		template <size_t delta, class Ty, size_t size>
+		template <size_t delta, class Ty, size_t size> inline
 		std::array<Ty, size - delta> cut(
 			array_ref<Ty, delta>& output,
 			const std::array<Ty, size>& src)
@@ -399,7 +399,7 @@ namespace nw {
 			return cut_back<delta, Ty, size>(src);
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size - 1> cut(
 			Ty& output1,
 			const std::array<Ty, size>& src)
@@ -407,7 +407,7 @@ namespace nw {
 			return cut<1, Ty, size>(array_ref<Ty, 1>{ output1 }, src);
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size - 2> cut(
 			Ty& output1,
 			Ty& output2,
@@ -416,7 +416,7 @@ namespace nw {
 			return cut<2, Ty, size>(array_ref<Ty, 2>{ output1, output2 }, src);
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size - 3> cut(
 			Ty& output1,
 			Ty& output2,
@@ -426,7 +426,7 @@ namespace nw {
 			return cut<3, Ty, size>(array_ref<Ty, 3>{ output1, output2, output3 }, src);
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size - 4> cut(
 			Ty& output1,
 			Ty& output2,
@@ -439,7 +439,7 @@ namespace nw {
 
 		//-------------------- clone_raw --------------------//
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		Ty* clone_raw(const std::array<Ty, size>& src)
 		{
 			Ty* arr = new Ty[size];
@@ -447,7 +447,7 @@ namespace nw {
 			return arr;
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::unique_ptr<Ty> clone_unique(const std::array<Ty, size>& src)
 		{
 			std::unique_ptr<Ty> arr = std::make_unique<Ty>(size);
@@ -457,7 +457,7 @@ namespace nw {
 
 		//-------------------- clone_from --------------------//
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size> clone_from(const Ty* src)
 		{
 			std::array<Ty, size> result;
@@ -465,7 +465,7 @@ namespace nw {
 			return src;
 		}
 
-		template <class Ty, size_t size>
+		template <class Ty, size_t size> inline
 		std::array<Ty, size> clone_from(const std::unique_ptr<Ty>& src)
 		{
 			return clone_from<Ty, size>(src.get());
@@ -473,7 +473,7 @@ namespace nw {
 
 		//-------------------- comparison --------------------//
 
-		template <class Ty, size_t size1, size_t size2>
+		template <class Ty, size_t size1, size_t size2> inline
 		int compare_common(const std::array<Ty, size1>& src1, const std::array<Ty, size2>& src2)
 		{
 			constexpr size_t size_min = Compare::min(size1, size2);
@@ -485,7 +485,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size1, size_t size2>
+		template <class Ty, size_t size1, size_t size2> inline
 		int compare_lexicographical(const std::array<Ty, size1>& src1, const std::array<Ty, size2>& src2)
 		{
 			const int cmp = compare_common(src1, src2);
