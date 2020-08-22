@@ -491,7 +491,6 @@ namespace nw {
 			const int cmp = compare_common(src1, src2);
 			if (cmp != 0) return cmp;
 			else return (int)size1 - size2;
-
 		}
 
 	} // namespace std_array
