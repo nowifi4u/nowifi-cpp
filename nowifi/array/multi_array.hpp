@@ -3,6 +3,7 @@
 #include <nowifi/compiler/class.hpp>
 #include <nowifi/array/std_array.hpp>
 #include <nowifi/compiler/assert.hpp>
+#include <algorithm>
 
 namespace nw {
 
@@ -128,9 +129,28 @@ namespace nw {
 		//-------------------- Non-modifying sequence operations --------------------//
 
 		/*
-		 * Returns true if <pred> returns true for all the elements 
+		 * Returns true if all the elements are equal to <val>
 		 * or <size> has a zero, and false otherwise.
-		 * 
+		 *
+		 * @param <arr> - Pointer to array
+		 * @param <size> - Size of array
+		 * @param <val> - Value to search for
+		 * @return **See above**
+		 */
+		template <class Ty, size_t HiDim> _NODISCARD inline
+		static bool all(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty& val)
+		{
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
+			{
+				if (below_type::template all<Ty>(arr[idx], size, val) == false) return false;
+			}
+			return true;
+		}
+
+		/*
+		 * Returns true if <pred> returns true for all the elements
+		 * or <size> has a zero, and false otherwise.
+		 *
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of array
 		 * @param <pred> - Unary function that accepts an element
@@ -138,15 +158,36 @@ namespace nw {
 		 * @return **See above**
 		 */
 		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD inline
-		static bool all_of(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
+			static bool all_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
-				if (below_type::template all_of<Ty, UnaryPredicate>(arr[idx], size, pred) == false) return false;
+				if (below_type::template all_if<Ty, UnaryPredicate>(arr[idx], size, pred) == false) return false;
 			}
 			return true;
+		}
+
+		/*
+		 * Returns true if any of the elements is equal to <val>,
+		 * and false otherwise or <size> is empty.
+		 *
+		 * @param <arr> - Pointer to array
+		 * @param <size> - Size of array
+		 * @param <val> - Value to search for
+		 * @return **See above**
+		 */
+		template <class Ty, size_t HiDim> _NODISCARD inline
+			static bool any(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty& val)
+		{
+			static_assert(HiDim >= Dim, "Parameter <size> too small");
+
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
+			{
+				if (below_type::template any<Ty>(arr[idx], size, val) == true) return true;
+			}
+			return false;
 		}
 
 		/*
@@ -157,15 +198,36 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <pred> - Unary function that accepts an element
 		 *                 and returns a val convertible to bool
+		 * @return **See above**
 		 */
 		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD inline
-		static bool any_of(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
+		static bool any_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
-				if (below_type::template any_of<Ty, UnaryPredicate>(arr[idx], size, pred) == true) return true;
+				if (below_type::template any_if<Ty, UnaryPredicate>(arr[idx], size, pred) == true) return true;
+			}
+			return false;
+		}
+
+		/* Returns true if all the elements are not equal to <val>
+		 * or <size> has a zero, and false otherwise.
+		 *
+		 * @param <arr> - Pointer to array
+		 * @param <size> - Size of array
+		 * @param <val> - Value to search for
+		 * @return **See above**
+		 */
+		template <class Ty, size_t HiDim> _NODISCARD inline
+		static bool none(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty& val)
+		{
+			static_assert(HiDim >= Dim, "Parameter <size> too small");
+
+			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
+			{
+				if (below_type::template none<Ty>(arr[idx], size, val) == false) return false;
 			}
 			return false;
 		}
@@ -180,13 +242,13 @@ namespace nw {
 		 * @return **See above**
 		 */
 		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD inline
-		static bool none_of(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
+		static bool none_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
-				if (below_type::template none_of<Ty, UnaryPredicate>(arr[idx], size, pred) == false) return false;
+				if (below_type::template none_if<Ty, UnaryPredicate>(arr[idx], size, pred) == false) return false;
 			}
 			return true;
 		}
@@ -577,7 +639,7 @@ namespace nw {
 
 			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
 			{
-				if (below_type::template mismatch<Ty, Ty2>(arr[idx], size, arr2[idx]) == false) return false;
+				if (below_type::template equal<Ty, Ty2>(arr[idx], size, arr2[idx]) == false) return false;
 			}
 
 			return true;
@@ -668,6 +730,26 @@ namespace nw {
 			{
 				below_type::template move<Ty, Ty2>(arr[idx], size, arr2[idx]);
 			}
+		}
+
+		/*
+		 * Moves the elements of <arr> into NEW ARRAY. 
+		 *
+		 * @param <arr> - Pointer to array
+		 * @param <size> - Size of arrays
+		 * @param <arr2> - Pointer to array #2
+		 * @return Pointer to NEW ARRAY
+		 *
+		 * @exception #pragma omp parallel for
+		 */
+		template <class newTy, class Ty, size_t HiDim> _NODISCARD inline
+		static iterator<newTy> move_new(iterator<Ty> arr, const index_high_type<HiDim>& size)
+		{
+			static_assert(HiDim >= Dim, "Parameter <size> too small");
+
+			iterator<newTy> newarr = allocate<newTy>(size);
+			move<Ty, newTy>(arr, size, newarr);
+			return newarr;
 		}
 
 		/*
@@ -1125,6 +1207,27 @@ namespace nw {
 		//-------------------- Non-modifying sequence operations --------------------//
 
 		/*
+		 * Returns true if all the elements are equal to <val>
+		 * or <size> has a zero, and false otherwise.
+		 *
+		 * @param <arr> - Pointer to array
+		 * @param <size> - Size of array
+		 * @param <val> - Value to search for
+		 * @return **See above**
+		 */
+		template <class Ty, size_t HiDim> _NODISCARD inline
+		static bool all(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty& val)
+		{
+			static_assert(HiDim >= 1, "Parameter <size> too small");
+
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
+			{
+				if (!(arr[idx] == val)) return false;
+			}
+			return true;
+		}
+
+		/*
 		 * Returns true if <pred> returns true for all the elements
 		 * or <size> is all-zero, and false otherwise.
 		 *
@@ -1135,11 +1238,32 @@ namespace nw {
 		 * @return **See above**
 		 */
 		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD inline
-		static bool all_of(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
+		static bool all_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
 
 			return std::all_of(arr, arr + size[HiDim - 1], pred);
+		}
+
+		/*
+		 * Returns true if any of the elements is equal to <val>,
+		 * and false otherwise or <size> is empty.
+		 *
+		 * @param <arr> - Pointer to array
+		 * @param <size> - Size of array
+		 * @param <val> - Value to search for
+		 * @return **See above**
+		 */
+		template <class Ty, size_t HiDim> _NODISCARD inline
+			static bool any(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty& val)
+		{
+			static_assert(HiDim >= 1, "Parameter <size> too small");
+
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
+			{
+				if (arr[idx] == val) return true;
+			}
+			return false;
 		}
 
 		/*
@@ -1150,13 +1274,34 @@ namespace nw {
 		 * @param <size> - Size of array
 		 * @param <pred> - Unary function that accepts an element
 		 *                 and returns a val convertible to bool
+		 * @return **See above**
 		 */
 		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD inline
-		static bool any_of(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
+		static bool any_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
 
 			return std::any_of(arr, arr + size[HiDim - 1], pred);
+		}
+
+		/* Returns true if all the elements are not equal to <val>
+		 * or <size> has a zero, and false otherwise.
+		 *
+		 * @param <arr> - Pointer to array
+		 * @param <size> - Size of array
+		 * @param <val> - Value to search for
+		 * @return **See above**
+		 */
+		template <class Ty, size_t HiDim> _NODISCARD inline
+			static bool none(iterator<Ty> arr, const index_high_type<HiDim>& size, const Ty& val)
+		{
+			static_assert(HiDim >= 1, "Parameter <size> too small");
+
+			for (int idx = 0; idx < size[HiDim - 1]; idx++)
+			{
+				if (arr[idx] == val) return false;
+			}
+			return true;
 		}
 
 		/* Returns true if <pred> returns false for all the elements.
@@ -1169,7 +1314,7 @@ namespace nw {
 		 * @return **See above**
 		 */
 		template <class Ty, class UnaryPredicate, size_t HiDim> _NODISCARD inline
-		static bool none_of(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
+		static bool none_if(iterator<Ty> arr, const index_high_type<HiDim>& size, UnaryPredicate pred)
 		{
 			static_assert(HiDim >= 1, "Parameter <size> too small");
 
@@ -1500,7 +1645,7 @@ namespace nw {
 
 			for (int idx = 0; idx < size[HiDim - 1]; idx++)
 			{
-				if (!(arr[idx] != arr2[idx])) return &arr[idx];
+				if (!(arr[idx] == arr2[idx])) return &arr[idx];
 			}
 
 			return nullptr;
@@ -1543,7 +1688,7 @@ namespace nw {
 		/*
 		 * Copies the elements of <arr> into NEW ARRAY.
 		 *
-		 * @param <Ty> [template] - item type of NEW ARRAY
+		 * @param <Ty> [template] - item type of NEW ARRAY. 
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of array
 		 * @return Pointer to NEW ARRAY
@@ -1591,6 +1736,24 @@ namespace nw {
 			static_assert(HiDim >= 1, "Parameter <size> too small");
 
 			std::move(arr, arr + size[HiDim - 1], arr2);
+		}
+
+		/*
+		 * Moves the elements of <arr> into NEW ARRAY. 
+		 *
+		 * @param <arr> - Pointer to array
+		 * @param <size> - Size of arrays
+		 * @param <arr2> - Pointer to array #2
+		 * @return Pointer to NEW ARRAY
+		 */
+		template <class newTy, class Ty, size_t HiDim> _NODISCARD inline
+		static iterator<newTy> move_new(iterator<Ty> arr, const index_high_type<HiDim>& size)
+		{
+			static_assert(HiDim >= 1, "Parameter <size> too small");
+
+			iterator<newTy> newarr = allocate<newTy>(size);
+			move<Ty, newTy>(arr, size, newarr);
+			return newarr;
 		}
 
 		/*
