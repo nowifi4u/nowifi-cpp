@@ -129,7 +129,7 @@ namespace nw {
 
 		/*
 		 * Returns true if <pred> returns true for all the elements 
-		 * or <size> is all-zero, and false otherwise.
+		 * or <size> has a zero, and false otherwise.
 		 * 
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of array
@@ -171,7 +171,7 @@ namespace nw {
 		}
 
 		/* Returns true if <pred> returns false for all the elements. 
-		 * or <size> is all-zero, and false otherwise.
+		 * or <size> has a zero, and false otherwise.
 		 * 
 		 * @param <arr> - Pointer to array
 		 * @param <size> - Size of array

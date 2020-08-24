@@ -8,19 +8,14 @@
 
 namespace nw {
 
-	namespace for_loop {
-
-		////////////////////////////////             ////////////////////////////////
-	//------------------------------             ------------------------------//
-	//------------------------------  FOR_LOOP   ------------------------------//
-	//------------------------------             ------------------------------//
-	////////////////////////////////             ////////////////////////////////
+	
+		//------------------------------ RAW ------------------------------//
 
 		template <size_t N>
 		struct raw
 		{
-			template <class Func>
-			static inline void call(Func const& fun)
+			template <class Func> inline
+			static void call(Func const& fun)
 			{
 				raw<N - 1>::call(fun);
 				fun();
@@ -30,21 +25,17 @@ namespace nw {
 		template <>
 		struct raw <0u>
 		{
-			template <class Func>
-			static inline void call(Func const& fun) { }
+			template <class Func> inline
+			static void call(Func const& fun) { }
 		};
 
-		////////////////////////////////             ////////////////////////////////
-		//------------------------------             ------------------------------//
-		//------------------------------          I  ------------------------------//
-		//------------------------------             ------------------------------//
-		////////////////////////////////             ////////////////////////////////
+		//------------------------------ RAW_I ------------------------------//
 
 		template <size_t N>
 		struct raw_i
 		{
-			template <class Func>
-			static inline void call(Func const& fun)
+			template <class Func> inline
+			static void call(Func const& fun)
 			{
 				raw_i<N - 1>::call(fun);
 				fun(N - 1);
@@ -54,22 +45,17 @@ namespace nw {
 		template <>
 		struct raw_i <0U>
 		{
-			template <class Func>
-			static inline void call(Func const& fun) { }
+			template <class Func> inline
+			static void call(Func const& fun) { }
 		};
 
-		////////////////////////////////              ////////////////////////////////
-		//------------------------------              ------------------------------//
-		//------------------------------          ANY ------------------------------//
-		//------------------------------              ------------------------------//
-		////////////////////////////////              ////////////////////////////////
-
+		//------------------------------ ANY ------------------------------//
 
 		template <size_t N>
 		struct any
 		{
-			template <class Func>
-			static inline bool call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static bool call(Func const& fun)
 			{
 				if (any<N - 1>::call(fun)) return true;
 				return fun();
@@ -79,25 +65,20 @@ namespace nw {
 		template <>
 		struct any <0U>
 		{
-			template <class Func>
-			static inline bool call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static bool call(Func const& fun)
 			{
 				return false;
 			}
 		};
 
-		////////////////////////////////                ////////////////////////////////
-		//------------------------------                ------------------------------//
-		//------------------------------          ANY_I ------------------------------//
-		//------------------------------                ------------------------------//
-		////////////////////////////////                ////////////////////////////////
-
+		//------------------------------ ANY_I ------------------------------//
 
 		template <size_t N>
 		struct any_i
 		{
-			template <class Func>
-			static inline bool call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static bool call(Func const& fun)
 			{
 				if (any_i<N - 1>::call(fun)) return true;
 				return fun(N - 1);
@@ -107,25 +88,20 @@ namespace nw {
 		template <>
 		struct any_i <0U>
 		{
-			template <class Func>
-			static inline bool call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static bool call(Func const& fun)
 			{
 				return false;
 			}
 		};
 
-		////////////////////////////////              ////////////////////////////////
-		//------------------------------              ------------------------------//
-		//------------------------------          ALL ------------------------------//
-		//------------------------------              ------------------------------//
-		////////////////////////////////              ////////////////////////////////
-
+		//------------------------------ ALL ------------------------------//
 
 		template <size_t N>
 		struct all
 		{
-			template <class Func>
-			static inline bool call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static bool call(Func const& fun)
 			{
 				if (!all<N - 1>::call(fun)) return false;
 				return fun();
@@ -135,25 +111,20 @@ namespace nw {
 		template <>
 		struct all <0U>
 		{
-			template <class Func>
-			static inline bool call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static bool call(Func const& fun)
 			{
 				return true;
 			}
 		};
 
-		////////////////////////////////                ////////////////////////////////
-		//------------------------------                ------------------------------//
-		//------------------------------          ALL_I ------------------------------//
-		//------------------------------                ------------------------------//
-		////////////////////////////////                ////////////////////////////////
-
+		//------------------------------ ALL_I ------------------------------//
 
 		template <size_t N>
 		struct all_i
 		{
-			template <class Func>
-			static inline bool call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static bool call(Func const& fun)
 			{
 				if (!all_i<N - 1>::call(fun)) return false;
 				return fun(N - 1);
@@ -163,25 +134,20 @@ namespace nw {
 		template <>
 		struct all_i <0U>
 		{
-			template <class Func>
-			static inline bool call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static bool call(Func const& fun)
 			{
 				return true;
 			}
 		};
 
-		////////////////////////////////                  ////////////////////////////////
-		//------------------------------                  ------------------------------//
-		//------------------------------          ANY_PTR ------------------------------//
-		//------------------------------                  ------------------------------//
-		////////////////////////////////                  ////////////////////////////////
-
+		//------------------------------ ANY_PTR ------------------------------//
 
 		template <size_t N>
 		struct any_ptr
 		{
-			template <class Ty, class Func>
-			static inline bool call(Func const& fun)
+			template <class Ty, class Func> [[nodiscard]] inline
+			static Ty* call(Func const& fun)
 			{
 				Ty result = any_ptr<N - 1>::template call<Ty>(fun);
 				if (result != nullptr) return result;
@@ -192,25 +158,20 @@ namespace nw {
 		template <>
 		struct any_ptr <0U>
 		{
-			template <class Ty, class Func>
-			static inline bool call(Func const& fun)
+			template <class Ty, class Func> [[nodiscard]] inline
+			static Ty* call(Func const& fun)
 			{
 				return nullptr;
 			}
 		};
 
-		////////////////////////////////                    ////////////////////////////////
-		//------------------------------                    ------------------------------//
-		//------------------------------          ANY_PTR_I ------------------------------//
-		//------------------------------                    ------------------------------//
-		////////////////////////////////                    ////////////////////////////////
-
+		//------------------------------ ANY_PTR_I ------------------------------//
 
 		template <size_t N>
 		struct any_ptr_i
 		{
-			template <class Ty, class Func>
-			static inline bool call(Func const& fun)
+			template <class Ty, class Func> [[nodiscard]] inline
+			static Ty* call(Func const& fun)
 			{
 				Ty result = any_ptr_i<N - 1>::template call<Ty>(fun);
 				if (result != nullptr) return result;
@@ -221,25 +182,20 @@ namespace nw {
 		template <>
 		struct any_ptr_i <0U>
 		{
-			template <class Ty, class Func>
-			static inline bool call(Func const& fun)
+			template <class Ty, class Func> [[nodiscard]] inline
+			static Ty* call(Func const& fun)
 			{
 				return nullptr;
 			}
 		};
 
-		////////////////////////////////                  ////////////////////////////////
-		//------------------------------                  ------------------------------//
-		//------------------------------          ANY_INT ------------------------------//
-		//------------------------------                  ------------------------------//
-		////////////////////////////////                  ////////////////////////////////
-
+		//------------------------------ ANY_INT ------------------------------//
 
 		template <size_t N>
 		struct any_int
 		{
-			template <class Func>
-			static inline int call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static int call(Func const& fun)
 			{
 				int result = any_int<N - 1>::call(fun);
 				if (result != 0) return result;
@@ -250,25 +206,20 @@ namespace nw {
 		template <>
 		struct any_int <0U>
 		{
-			template <class Func>
-			static inline int call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static int call(Func const& fun)
 			{
 				return 0;
 			}
 		};
 
-		////////////////////////////////                    ////////////////////////////////
-		//------------------------------                    ------------------------------//
-		//------------------------------          ANY_INT_I ------------------------------//
-		//------------------------------                    ------------------------------//
-		////////////////////////////////                    ////////////////////////////////
-
+		//------------------------------ ANY_INT_I ------------------------------//
 
 		template <size_t N>
 		struct any_int_i
 		{
-			template <class Func>
-			static inline int call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static int call(Func const& fun)
 			{
 				int result = any_int_i<N - 1>::call(fun);
 				if (result != 0) return result;
@@ -279,62 +230,54 @@ namespace nw {
 		template <>
 		struct any_int_i <0U>
 		{
-			template <class Func>
-			static inline int call(Func const& fun)
+			template <class Func> [[nodiscard]] inline
+			static int call(Func const& fun)
 			{
 				return 0;
 			}
 		};
 
-		////////////////////////////////                 ////////////////////////////////
-		//------------------------------                 ------------------------------//
-		//------------------------------          REDUCE ------------------------------//
-		//------------------------------                 ------------------------------//
-		////////////////////////////////                 ////////////////////////////////
+		//------------------------------ SUM ------------------------------//
 
 		template <size_t N>
-		struct reduce
+		struct sum
 		{
-			template <class Ty, class Func, class Reducer>
-			static inline bool call(const Ty& start, Func const& fun, Reducer const& reducer)
+			template <class Func> [[nodiscard]] inline
+				static int call(Func const& fun)
 			{
-				return reducer(reduce<N - 1>::template call<Ty>(start, fun, reducer), fun());
+				return sum<N - 1>::call(fun) + fun();
 			}
 		};
 
 		template <>
-		struct reduce <0U>
+		struct sum <0U>
 		{
-			template <class Ty, class Func, class Reducer>
-			static inline bool call(const Ty& start, Func const& fun, Reducer const& reducer)
+			template <class Func> [[nodiscard]] inline
+				static int call(Func const& fun)
 			{
-				return start;
+				return 0;
 			}
 		};
 
-		////////////////////////////////                   ////////////////////////////////
-		//------------------------------                   ------------------------------//
-		//------------------------------          REDUCE_I ------------------------------//
-		//------------------------------                   ------------------------------//
-		////////////////////////////////                   ////////////////////////////////
+		//------------------------------ SUM_I ------------------------------//
 
 		template <size_t N>
-		struct reduce_i
+		struct sum_i
 		{
-			template <class Ty, class Func, class Reducer>
-			static inline bool call(const Ty& start, Func const& fun, Reducer const& reducer)
+			template <class Func> [[nodiscard]] inline
+				static int call(Func const& fun)
 			{
-				return reducer(reduce_i<N - 1>::template call<Ty>(start, fun, reducer), fun(N - 1));
+				return sum_i<N - 1>::call(fun) + fun(N - 1);
 			}
 		};
 
 		template <>
-		struct reduce_i <0U>
+		struct sum_i <0U>
 		{
-			template <class Ty, class Func, class Reducer>
-			static inline bool call(const Ty& start, Func const& fun, Reducer const& reducer)
+			template <class Func> [[nodiscard]] inline
+				static int call(Func const& fun)
 			{
-				return start;
+				return 0;
 			}
 		};
 

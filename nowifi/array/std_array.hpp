@@ -26,7 +26,7 @@ namespace nw {
 
 		//-------------------- Non-modifying sequence operations --------------------//
 
-		template <class Ty, size_t size> inline
+		template <class Ty, size_t size> [[nodiscard]] inline
 		bool all_of(const std::array<Ty, size>& src, const Ty& val)
 		{
 			return !for_loop::any_i<size>::call(
@@ -36,7 +36,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size> inline
+		template <class Ty, size_t size> [[nodiscard]] inline
 		bool any_of(const std::array<Ty, size>& src, const Ty& val)
 		{
 			return for_loop::any_i<size>::call(
@@ -46,7 +46,7 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size> inline
+		template <class Ty, size_t size> [[nodiscard]] inline
 		bool none_of(const std::array<Ty, size>& src, const Ty& val)
 		{
 			return !for_loop::any_i<size>::call(
@@ -76,47 +76,173 @@ namespace nw {
 			});
 		}
 
-		template <class Ty, size_t size> inline
+		template <class Ty, size_t size> [[nodiscard]] inline
+		Ty* find(std::array<Ty, size>& src, const Ty& val, size_t& pos)
+		{
+			return for_loop::any_ptr_i<size>::template call<Ty>(
+				[&src, &val, &pos](size_t idx)
+			{
+				if (src[idx] == val)
+				{
+					pos = idx;
+					return &src[idx];
+				}
+				else
+				{
+					return nullptr;
+				}
+			});
+		}
+
+		template <class Ty, size_t size> [[nodiscard]] inline
 		Ty* find(std::array<Ty, size>& src, const Ty& val)
 		{
-			return for_loop::any_ptr_i<size>::template call<Ty*>(
+			return for_loop::any_ptr_i<size>::template call<Ty>(
 				[&src, &val](size_t idx)
 			{
-				return (src[idx] == val ? &src[idx] : nullptr);
+				if (src[idx] == val)
+				{
+					return &src[idx];
+				}
+				else
+				{
+					return nullptr;
+				}
 			});
 		}
 
-		template <class Ty, size_t size, class UnaryPredicate> inline
+		template <class Ty, size_t size, class UnaryPredicate> [[nodiscard]] inline
+		Ty* find_if(std::array<Ty, size>& src, UnaryPredicate pred, size_t pos)
+		{
+			return for_loop::any_ptr_i<size>::template call<Ty>(
+				[&src, &pred, &pos](size_t idx)
+			{
+				if (pred(src[idx]))
+				{
+					pos = idx;
+					return &src[idx];
+				}
+				else
+				{
+					return nullptr;
+				}
+			});
+		}
+
+		template <class Ty, size_t size, class UnaryPredicate> [[nodiscard]] inline
 		Ty* find_if(std::array<Ty, size>& src, UnaryPredicate pred)
 		{
-			return for_loop::any_ptr_i<size>::template call<Ty*>(
+			return for_loop::any_ptr_i<size>::template call<Ty>(
 				[&src, &pred](size_t idx)
 			{
-				return (pred(src[idx]) ? &src[idx] : nullptr);
+				if (pred(src[idx]))
+				{
+					return &src[idx];
+				}
+				else
+				{
+					return nullptr;
+				}
 			});
 		}
 
-		template <class Ty, size_t size, class UnaryPredicate> inline
+		template <class Ty, size_t size, class UnaryPredicate> [[nodiscard]] inline
+		Ty* find_if_not(std::array<Ty, size>& src, UnaryPredicate pred, size_t& pos)
+		{
+			return for_loop::any_ptr_i<size>::template call<Ty>(
+				[&src, &pred, &pos](size_t idx)
+			{
+				if (!pred(src[idx]))
+				{
+					pos = idx;
+					return &src[idx];
+				}
+				else
+				{
+					return nullptr;
+				}
+			});
+		}
+
+		template <class Ty, size_t size, class UnaryPredicate> [[nodiscard]] inline
 		Ty* find_if_not(std::array<Ty, size>& src, UnaryPredicate pred)
 		{
-			return for_loop::any_ptr_i<size>::template call<Ty*>(
+			return for_loop::any_ptr_i<size>::template call<Ty>(
 				[&src, &pred](size_t idx)
 			{
-				return (pred(src[idx]) ? nullptr : &src[idx]);
+				if (!pred(src[idx]))
+				{
+					return &src[idx];
+				}
+				else
+				{
+					return nullptr;
+				}
 			});
 		}
 
-		template <class Ty, size_t size> inline
+		template <class Ty, size_t size> [[nodiscard]] inline
 		size_t count(const std::array<Ty, size>& src, const Ty& val)
 		{
-			return for_loop::reduce_i<size>::template call<size_t>(0U,
-				[&src](size_t idx)
+			return for_loop::sum_i<size>::call(
+				[&src, &val](size_t idx)
 			{
-				return src[idx];
-			},
-				[&val](size_t result, const Ty& v)
+				return src[idx] == val;
+			});
+		}
+
+		template <class Ty, size_t size, class UnaryPredicate> [[nodiscard]] inline
+		size_t count_if(const std::array<Ty, size>& src, UnaryPredicate pred)
+		{
+			return for_loop::sum_i<size>::call(
+				[&src, &pred](size_t idx)
 			{
-				return result + (v == val);
+				return pred(src[idx]);
+			});
+		}
+
+		template <class Ty, size_t size>
+		Ty* mismatch(const std::array<Ty, size>& src1, const std::array<Ty, size>& src2, size_t& pos)
+		{
+			return for_loop::any_ptr_i<size>::template call<Ty>(
+				[&src1, &src2](size_t idx)
+			{
+				if (src1[idx] != src2[idx])
+				{
+					pos = idx;
+					return &src1[idx];
+				}
+				else
+				{
+					return nullptr;
+				}
+			});
+		}
+
+		template <class Ty, size_t size>
+		Ty* mismatch(const std::array<Ty, size>& src1, const std::array<Ty, size>& src2)
+		{
+			return for_loop::any_ptr_i<size>::template call<Ty>(
+				[&src1, &src2](size_t idx)
+			{
+				if (src1[idx] != src2[idx])
+				{
+					return &src1[idx];
+				}
+				else
+				{
+					return nullptr;
+				}
+			});
+		}
+
+		template <class Ty, size_t size> [[nodiscard]] inline
+		bool equal(const std::array<Ty, size>& src1, const std::array<Ty, size>& src2)
+		{
+			return for_loop::all_i<size>::call(
+				[&src1, &src2](size_t idx)
+			{
+				return src1[idx] == src2[idx];
 			});
 		}
 
