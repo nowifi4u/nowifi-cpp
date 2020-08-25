@@ -12,7 +12,7 @@ namespace nw {
 	class basic_from_string
 	{
 	public:
-		CLASS_MAKE_STATIC(basic_from_string, <charTy>);
+		NW_CLASS_MAKE_STATIC(basic_from_string, <charTy>);
 
 		using string_type = std::basic_string<charTy>;
 

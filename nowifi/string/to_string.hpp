@@ -9,7 +9,7 @@ namespace nw {
 	class basic_to_string
 	{
 	public:
-		CLASS_MAKE_STATIC(basic_to_string, <charTy>);
+		NW_CLASS_MAKE_STATIC(basic_to_string, <charTy>);
 
 		using char_type = charTy;
 		using c_string_type = char_type*;

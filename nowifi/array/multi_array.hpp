@@ -4,6 +4,7 @@
 #include <nowifi/array/std_array.hpp>
 #include <nowifi/compiler/assert.hpp>
 #include <algorithm>
+#include <stdexcept>
 
 namespace nw {
 
@@ -17,7 +18,7 @@ namespace nw {
 	class multi_array
 	{
 	public:
-		CLASS_MAKE_STATIC(multi_array, <Dim>);
+		NW_CLASS_MAKE_STATIC(multi_array, <Dim>);
 
 		friend class multi_array;
 		
@@ -33,20 +34,52 @@ namespace nw {
 
 	public:
 
-		//Item type or top-level array for given item type
-		template <class Ty>
-		using item_type = typename below_type::template item_type<Ty>*;
-
-		//Pointer type for given item type
-		template <class Ty>
-		using iterator = item_type<Ty>*;
-
 		//Array size / position type
 		using index_type = index_high_type<Dim>;
 
-		static inline constexpr size_t depth()
+		//Item type or top-level array for given item type
+		template <class Ty>
+		using item_type = typename below_type::template item_type<Ty> *const;
+
+		//Pointer type for given item type
+		template <class Ty>
+		using free_iterator = item_type<Ty>*;
+
+		template <class Ty>
+		using iterator = typename below_type::template iterator<Ty> const*;
+
+		template <class Ty>
+		using const_iterator = iterator<Ty> const;
+
+		template <class Ty>
+		using iterator_allocatable = typename below_type::template iterator<Ty>*;
+
+		//-------------------- iterator <=> free_iterator --------------------//
+
+		template <class Ty> inline constexpr
+		static free_iterator<Ty> pointer_remove_const_full(iterator<Ty> arr)
 		{
-			return Dim;
+			return const_cast<free_iterator<Ty>>(arr);
+		}
+
+		template <class Ty> inline constexpr
+		static iterator<Ty> pointer_add_const_full(free_iterator<Ty> arr)
+		{
+			return const_cast<free_iterator<Ty>>(arr);
+		}
+
+		//-------------------- iterator <=> iterator_allocatable --------------------//
+
+		template <class Ty> inline constexpr
+		static iterator_allocatable<Ty> pointer_make_allocatable(iterator<Ty> arr)
+		{
+			return const_cast<iterator_allocatable<Ty>>(arr);
+		}
+
+		template <class Ty> inline constexpr
+		static iterator<Ty> pointer_make_unallocatable(iterator_allocatable<Ty> arr)
+		{
+			return const_cast<iterator<Ty>>(arr);
 		}
 
 		//-------------------- Memory managing operations --------------------//
@@ -70,7 +103,7 @@ namespace nw {
 #pragma omp parallel for
 			for (int idx = 0; idx < _size; idx++)
 			{
-				arr[idx] = below_type::template allocate<Ty>(size);
+				pointer_make_allocatable(arr)[idx] = below_type::template allocate<Ty>(size);
 			}
 			return arr;
 		}
@@ -106,9 +139,17 @@ namespace nw {
 		template <class Ty, size_t HiDim> _NODISCARD inline
 		static Ty& get(iterator<Ty> arr, const index_high_type<HiDim>& pos)
 		{
-			static_assert(HiDim >= Dim, "Parameter <size> too small");
+			static_assert(HiDim >= Dim, "Parameter <pos> too small");
 
 			return below_type::template get<Ty>(arr[pos[HiDim - Dim]], pos);
+		}
+
+		template <class Ty, class... Args> _NODISCARD inline
+		static Ty& get_pack(iterator<Ty> arr, Args&&... args)
+		{
+			static_assert(sizeof...(args) == Dim, "Invalid pack size");
+
+			return get<Ty, Dim>(arr, index_type{ std::forward<Args>(args)... });
 		}
 
 		/*
@@ -119,7 +160,7 @@ namespace nw {
 		 * @return **See above**
 		 */
 		template <class Ty, size_t HiDim> _NODISCARD inline
-		static const Ty& get_const(iterator<Ty> arr, const index_high_type<HiDim>& pos)
+		static const Ty& get_const(typename iterator<Ty> const arr, const index_high_type<HiDim>& pos)
 		{
 			static_assert(HiDim >= Dim, "Parameter <size> too small");
 
@@ -292,7 +333,7 @@ namespace nw {
 
 			const auto cut_size = std_array::cut_back<Layer>(size);
 
-			multi_array<Dim - Layer>::template for_each<multi_array<Layer>::template iterator<Ty>, Function>(arr, cut_size, fn);
+			multi_array<Dim - Layer>::template for_each<multi_array<Layer>::template const_iterator<Ty>, Function>(arr, cut_size, fn);
 		}
 
 	protected:
@@ -753,27 +794,6 @@ namespace nw {
 		}
 
 		/*
-		 * Swaps the elements of <arr> and <arr2>.
-		 * 
-		 * @param <arr> - Pointer to array
-		 * @param <size> - Size of arrays
-		 * @param <arr2> - Pointer to array #2
-		 * 
-		 * @exception #pragma omp parallel for
-		 */
-		template <class Ty, size_t HiDim> inline
-		static void swap(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty> arr2)
-		{
-			static_assert(HiDim >= Dim, "Parameter <size> too small");
-
-#pragma omp parallel for
-			for (int idx = 0; idx < size[HiDim - Dim]; idx++)
-			{
-				below_type::template swap<Ty>(arr[idx], size, arr2[idx]);
-			}
-		}
-
-		/*
 		 * Applies an operation sequentially to the elements of <arr> and 
 		 * stores the result into <arr2>.
 		 * 
@@ -1113,7 +1133,7 @@ namespace nw {
 	class multi_array <1U>
 	{
 	public:
-		CLASS_MAKE_STATIC(multi_array, <1U>);
+		NW_CLASS_MAKE_STATIC(multi_array, <1U>);
 
 		friend class multi_array;
 
@@ -1127,20 +1147,52 @@ namespace nw {
 
 	public:
 
+		//Array size / position type
+		using index_type = index_high_type<1>;
+
 		//Item type or top-level array for given item type
 		template <class Ty>
 		using item_type = Ty;
 		
 		//Pointer type for given item type
 		template <class Ty>
+		using free_iterator = item_type<Ty>*;
+
+		template <class Ty>
 		using iterator = item_type<Ty>*;
 
-		//Array size / position type
-		using index_type = index_high_type<1>;
+		template <class Ty>
+		using const_iterator = iterator<Ty> const;
 
-		static inline constexpr size_t depth()
+		template <class Ty>
+		using iterator_allocatable = iterator<Ty>;
+
+		//-------------------- iterator <=> free_iterator --------------------//
+
+		template <class Ty> inline constexpr
+		static free_iterator<Ty> pointer_remove_const_full(iterator<Ty> arr)
 		{
-			return 1;
+			return const_cast<free_iterator<Ty>>(arr);
+		}
+
+		template <class Ty> inline constexpr
+		static iterator<Ty> pointer_add_const_full(free_iterator<Ty> arr)
+		{
+			return const_cast<free_iterator<Ty>>(arr);
+		}
+
+		//-------------------- iterator <=> iterator_allocatable --------------------//
+
+		template <class Ty> inline constexpr
+		static iterator_allocatable<Ty> pointer_make_allocatable(iterator<Ty> arr)
+		{
+			return const_cast<iterator_allocatable<Ty>>(arr);
+		}
+
+		template <class Ty> inline constexpr
+		static iterator<Ty> pointer_make_unallocatable(iterator_allocatable<Ty> arr)
+		{
+			return const_cast<iterator<Ty>>(arr);
 		}
 
 		//-------------------- Memory managing operations --------------------//
@@ -1187,6 +1239,12 @@ namespace nw {
 			static_assert(HiDim >= 1, "Parameter <size> too small");
 
 			return arr[pos[HiDim - 1]];
+		}
+
+		template <class Ty, class Args> _NODISCARD inline
+		static Ty& get_pack(iterator<Ty> arr, Args&& args)
+		{
+			return get<Ty, 1>(arr, index_type{std::forward<Args>(args)});
 		}
 
 		/*
@@ -1407,7 +1465,7 @@ namespace nw {
 			const auto cut_size = std_array::cut_back<Layer>(size);
 			index_high_type<1 - Layer> pos;
 
-			multi_array<1 - Layer>::template _impl_for_each_i<multi_array<Layer>::template iterator<Ty>, Function>(arr, cut_size, fn, pos);
+			multi_array<1 - Layer>::template _impl_for_each_i<multi_array<Layer>::template const_iterator<Ty>, Function>(arr, cut_size, fn, pos);
 		}
 
 		/*
@@ -1757,21 +1815,6 @@ namespace nw {
 		}
 
 		/*
-		 * Swaps the elements of <arr> and <arr2>.
-		 *
-		 * @param <arr> - Pointer to array
-		 * @param <size> - Size of arrays
-		 * @param <arr2> - Pointer to array #2
-		 */
-		template <class Ty, size_t HiDim> inline
-		static void swap(iterator<Ty> arr, const index_high_type<HiDim>& size, iterator<Ty> arr2)
-		{
-			static_assert(HiDim >= 1, "Parameter <size> too small");
-
-			std::swap(arr, arr + size[HiDim - 1], arr2);
-		}
-
-		/*
 		 * Applies an operation sequentially to the elements of <arr> and
 		 * stores the result into <arr2>.
 		 *
@@ -2057,7 +2100,7 @@ namespace nw {
 	class multi_array <0U>
 	{
 	public:
-		CLASS_MAKE_STATIC(multi_array, <0U>);
+		NW_CLASS_MAKE_STATIC(multi_array, <0U>);
 
 		friend class multi_array;
 

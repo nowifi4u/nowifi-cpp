@@ -235,7 +235,7 @@ namespace nw {
 
 		//STATIC
 		template <class Ty>
-		static ostream_type& _writeArray2D(Ty** arr, size_t size1, size_t size2, const string_type& itemDelimiter, const string_type& rowDelimiter, ostream_type& os, const Error_type& err = global::Error_Throw<std::string>)
+		static ostream_type& _writeArray2D(Ty *const * arr, size_t size1, size_t size2, const string_type& itemDelimiter, const string_type& rowDelimiter, ostream_type& os, const Error_type& err = global::Error_Throw<std::string>)
 		{
 			const size_t lastIdx1 = size1 - 1;
 			for (size_t idx1 = 0; idx1 < lastIdx1; idx1++)
@@ -248,7 +248,7 @@ namespace nw {
 		}
 
 		template <class Ty>
-		Writer_type& writeArray2D(Ty** arr, size_t size1, size_t size2, const string_type& itemDelimiter, const string_type& rowDelimiter)
+		Writer_type& writeArray2D(Ty *const * arr, size_t size1, size_t size2, const string_type& itemDelimiter, const string_type& rowDelimiter)
 		{
 			Writer_type::_writeArray2D<Ty>(arr, size1, size2, itemDelimiter, rowDelimiter, os, err);
 			return THIS;

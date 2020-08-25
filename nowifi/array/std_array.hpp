@@ -7,6 +7,8 @@
 #include <array>
 #include <tuple>
 #include <memory>
+#include <initializer_list>
+#include <stdexcept>
 
 namespace nw {
 
@@ -565,7 +567,7 @@ namespace nw {
 
 		//-------------------- clone_raw --------------------//
 
-		template <class Ty, size_t size> inline
+		template <class Ty, size_t size> _NODISCARD inline
 		Ty* clone_raw(const std::array<Ty, size>& src)
 		{
 			Ty* arr = new Ty[size];
@@ -573,7 +575,7 @@ namespace nw {
 			return arr;
 		}
 
-		template <class Ty, size_t size> inline
+		template <class Ty, size_t size> _NODISCARD inline
 		std::unique_ptr<Ty> clone_unique(const std::array<Ty, size>& src)
 		{
 			std::unique_ptr<Ty> arr = std::make_unique<Ty>(size);
@@ -583,7 +585,7 @@ namespace nw {
 
 		//-------------------- clone_from --------------------//
 
-		template <class Ty, size_t size> inline
+		template <class Ty, size_t size> _NODISCARD inline
 		std::array<Ty, size> clone_from(const Ty* src)
 		{
 			std::array<Ty, size> result;
@@ -591,10 +593,20 @@ namespace nw {
 			return src;
 		}
 
-		template <class Ty, size_t size> inline
+		template <class Ty, size_t size> _NODISCARD inline
 		std::array<Ty, size> clone_from(const std::unique_ptr<Ty>& src)
 		{
 			return clone_from<Ty, size>(src.get());
+		}
+
+		template <class Ty, size_t size> _NODISCARD inline
+		std::array<Ty, size> clone_from(std::initializer_list<Ty> src)
+		{
+			if (src.size() != size) throw std::invalid_argument("Incorrect initializer list size");
+
+			std::array<Ty, size> result;
+			std::copy_n(src.begin(), size, result.begin());
+			return result;
 		}
 
 		//-------------------- comparison --------------------//

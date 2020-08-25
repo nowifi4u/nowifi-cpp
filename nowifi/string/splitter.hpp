@@ -20,25 +20,36 @@ namespace nw {
 		basic_StringSplitter(const basic_StringSplitter& second, charTy sep)
 			: basic_StringSplitter(second.stream.str(), sep) {}
 
-		bool cut(string_type& token) {
+		bool cut(string_type& token)
+		{
 			return std::getline<charTy>(stream, token, sep) ? true : false;
 		}
 
-		string_type cut_return() {
+		string_type cut_return()
+		{
 			string_type token;
 			this->cut(token);
 			return token;
 		}
 
-		bool eof() {
+		bool eof() const
+		{
 			return stream.rdbuf()->in_avail() == 0;
 		}
 
-		static std::vector<string_type> split(const string_type& str, charTy sep) {
+		string_type getBuffer() const
+		{
+			return stream.str();
+		}
+
+
+		static std::vector<string_type> split(const string_type& str, charTy sep)
+		{
 			std::vector<string_type> tokens;
 			basic_StringSplitter splitter(str, sep);
 			string_type token;
-			while (splitter.cut(token)) {
+			while (splitter.cut(token))
+			{
 				tokens.push_back(token);
 			}
 			return tokens;

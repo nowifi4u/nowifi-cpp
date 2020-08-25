@@ -6,7 +6,7 @@
 
 
 
-#define CLASS_MAKE_STATIC(classname, ...) \
+#define NW_CLASS_MAKE_STATIC(classname, ...) \
 classname() = delete; \
 ~classname() = delete; \
 classname ( classname __VA_ARGS__ & ) = delete; \
