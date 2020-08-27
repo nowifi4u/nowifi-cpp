@@ -21,7 +21,7 @@ namespace nw {
 
 		friend class multi_array;
 		
-		template <size_t Dim>
+		template <size_t AnyDim>
 		friend class multi_array;
 
 	protected:
@@ -1136,7 +1136,7 @@ namespace nw {
 
 		friend class multi_array;
 
-		template <size_t Dim>
+		template <size_t AnyDim>
 		friend class multi_array;
 
 	protected:
@@ -2103,7 +2103,7 @@ namespace nw {
 
 		friend class multi_array;
 
-		template <size_t Dim>
+		template <size_t AnyDim>
 		friend class multi_array;
 
 	protected:

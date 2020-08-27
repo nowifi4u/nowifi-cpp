@@ -69,42 +69,6 @@ namespace nw {
 			return ((x) & (y));
 		}
 
-		static const char _log2_32_LogTable256[256] =
-		{
-		#define _log2_32_LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
-			- 1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
-			_log2_32_LT(4), _log2_32_LT(5), _log2_32_LT(5), _log2_32_LT(6), _log2_32_LT(6), _log2_32_LT(6), _log2_32_LT(6),
-			_log2_32_LT(7), _log2_32_LT(7), _log2_32_LT(7), _log2_32_LT(7), _log2_32_LT(7), _log2_32_LT(7), _log2_32_LT(7), _log2_32_LT(7)
-		};
-
-		constexpr inline unsigned log2_32_lookup(unsigned int v)
-		{
-			register unsigned int tt = 0;
-
-			if (tt = v >> 24)
-			{
-				return 24 + _log2_32_LogTable256[tt];
-			}
-			else if (tt = v >> 16)
-			{
-				return 16 + _log2_32_LogTable256[tt];
-			}
-			else if (tt = v >> 8)
-			{
-				return 8 + _log2_32_LogTable256[tt];
-			}
-			else
-			{
-				return _log2_32_LogTable256[v];
-			}
-		}
-
 	} // namespace Bitwise
-
-	namespace Log2 {
-	
-	
-	
-	} // namespace Log2
 
 } // namespace nw
