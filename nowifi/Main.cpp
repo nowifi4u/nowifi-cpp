@@ -17,6 +17,7 @@
 #include <nowifi/math/function.hpp>
 #include <nowifi/math/map.hpp>
 #include <nowifi/math/math.hpp>
+#include <nowifi/math/modular.hpp>
 #include <nowifi/math/safe.hpp>
 
 #include <nowifi/math/reducer/minmax.hpp>
@@ -126,6 +127,12 @@ void test_std_array()
 }
 
 void main() {
-	test_std_array();
-	test_multi_array();
+	//test_std_array();
+	//test_multi_array();
+
+	std::cout << nw::ModularMath_Int<10007>::factorial_fast(100) 
+		<< ' ' << nw::ModularMath_Int<10007>::factorial_nomem(100)
+		<< ' ' << nw::ModularMath_Int<10007>::multiplicity_factorial(100)
+		<< std::endl;
+	system("pause");
 }
