@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 
 namespace nw {
 
@@ -29,6 +30,18 @@ namespace nw {
 		{
 			return _size;
 		}
+
+		/*_Ty& operator[](size_t idx)
+		{
+			if (idx >= _size) throw std::invalid_argument("Index too big");
+			return arr[idx];
+		}
+
+		const _Ty& operator[](size_t idx) const
+		{
+			if (idx >= _size) throw std::invalid_argument("Index too big");
+			return arr[idx];
+		}*/
 	};
 
 	template <class _Ty>
