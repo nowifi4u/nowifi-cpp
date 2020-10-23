@@ -2,6 +2,7 @@
 #include <nowifi/array/multi_array.hpp>
 #include <nowifi/array/std_array.hpp>
 #include <nowifi/array/stl.hpp>
+#include <nowifi/array/uvector.hpp>
 
 #include <nowifi/compiler/assert.hpp>
 #include <nowifi/compiler/class.hpp>
@@ -58,22 +59,21 @@ void test_multi_array()
 
 	std::cout << "Allocating array..." << std::endl;
 	auto arr = multi_array8D::generate_i_new<int>(arr_size, [](const multi_array8D::index_type& pos) {
-		return pos[7]
-			+ pos[6] * (9)
-			+ pos[5] * (9 * 8)
-			+ pos[4] * (9 * 8 * 7)
-			+ pos[3] * (9 * 8 * 7 * 6)
-			+ pos[2] * (9 * 8 * 7 * 6 * 5);
+		return pos.arr[7]
+			+ pos.arr[6] * (9)
+			+ pos.arr[5] * (9 * 8)
+			+ pos.arr[4] * (9 * 8 * 7)
+			+ pos.arr[3] * (9 * 8 * 7 * 6)
+			+ pos.arr[2] * (9 * 8 * 7 * 6 * 5);
 	});
 
-	std::stringstream oss;
-	multi_array8D::for_each_layer<2>(arr, arr_size, [&oss](multi_array2D::iterator<int> subarr) {
-		Writer::_writeArray2D(subarr, 8, 9, "\t", "\n", oss);
-		Writer::_write("\n\n\n", oss);
-		//Writer_Console.writeArray2D(subarr, 8, 9, "\t", "\n").write("\n\n\n");
-	});
-
-	std::cout << oss.rdbuf();
+	//std::stringstream oss;
+	//multi_array8D::for_each_layer<2>(arr, arr_size, [&oss](multi_array2D::iterator<int> subarr) {
+	//	Writer::_writeArray2D(subarr, 8, 9, "\t", "\n", oss);
+	//	Writer::_write("\n\n\n", oss);
+	//	//Writer_Console.writeArray2D(subarr, 8, 9, "\t", "\n").write("\n\n\n");
+	//});
+	//std::cout << oss.rdbuf();
 
 	omp_set_num_threads(16);
 
@@ -126,13 +126,28 @@ void test_std_array()
 	test_std_array_comp(arr4, arr4);
 }
 
-void main() {
-	//test_std_array();
-	//test_multi_array();
-
-	std::cout << nw::ModularMath_Int<10007>::factorial_fast(100) 
+void test_modular()
+{
+	std::cout << nw::ModularMath_Int<10007>::factorial_fast(100)
 		<< ' ' << nw::ModularMath_Int<10007>::factorial_nomem(100)
 		<< ' ' << nw::ModularMath_Int<10007>::multiplicity_factorial(100)
 		<< std::endl;
+}
+
+void test_uvector()
+{
+	nw::uVector4<int> vec{ 1,2,3,4 };
+
+	std::cout << vec.arr[0] << std::endl
+		<< vec.arr[1] << std::endl
+		<< vec.arr[2] << std::endl
+		<< vec.arr[3] << std::endl;
+}
+
+void main() {
+	//test_std_array();
+	//test_multi_array();
+	test_uvector();
+	
 	system("pause");
 }
