@@ -13,6 +13,16 @@ namespace nw {
 	template <size_t _size, class _Ty>
 	struct uVector
 	{
+		using value_type = _Ty;
+		using size_type = size_t;
+		using pointer = _Ty*;
+		using const_pointer = const _Ty*;
+		using reference = _Ty&;
+		using const_reference = const _Ty&;
+
+		using iterator = _Ty*;
+		using const_iterator = const _Ty*;
+
 		using below_type = uVector<_size - 1, _Ty>;
 
 		union
@@ -65,6 +75,16 @@ namespace nw {
 	template <class _Ty>
 	struct uVector <0, _Ty>
 	{
+		using value_type = _Ty;
+		using size_type = size_t;
+		using pointer = _Ty*;
+		using const_pointer = const _Ty*;
+		using reference = _Ty&;
+		using const_reference = const _Ty&;
+
+		using iterator = _Ty*;
+		using const_iterator = const _Ty*;
+
 		static constexpr size_t size()
 		{
 			return 0;
