@@ -12,3 +12,8 @@
 *.opendb
 *.idb
 *.ilk
+
+.vs
+Debug
+Release
+x64
