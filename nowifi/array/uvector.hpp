@@ -12,7 +12,7 @@ namespace nw {
 		union
 		{
 			_Ty arr[_size];
-
+			
 			struct
 			{
 				_Ty first;
@@ -41,6 +41,16 @@ namespace nw {
 		{
 			if (idx >= _size) throw std::invalid_argument("Index too big");
 			return arr[idx];
+		}
+
+		_Ty* begin()
+		{
+			return arr;
+		}
+
+		_Ty* end()
+		{
+			return arr + _size;
 		}
 	};
 
