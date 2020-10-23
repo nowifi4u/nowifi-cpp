@@ -324,7 +324,7 @@ namespace nw {
 		{
 			for (int idx = 0; idx < size.first; idx++)
 			{
-				pos.arr[HiDim - Dim] = idx;
+				pos.array[HiDim - Dim] = idx;
 				below_type::template _impl_for_each_i<Ty, Function_i>(arr[idx], size.after_first, fn, pos);
 			}
 		}
@@ -1001,7 +1001,7 @@ namespace nw {
 		{
 			for (int idx = 0; idx < size.first; idx++)
 			{
-				pos.arr[HiDim - Dim] = idx;
+				pos.array[HiDim - Dim] = idx;
 				below_type::template _impl_generate_i<Ty, Generator>(arr[idx], size.after_first, gen, pos);
 			}
 		}
@@ -1318,7 +1318,7 @@ namespace nw {
 		{
 			for (int idx = 0; idx < size.first; idx++)
 			{
-				pos.arr[HiDim - 1] = idx;
+				pos.array[HiDim - 1] = idx;
 				fn(arr[idx], pos);
 			}
 		}
@@ -1874,7 +1874,7 @@ namespace nw {
 		{
 			for (int idx = 0; idx < size.first; idx++)
 			{
-				pos.arr[HiDim - 1] = idx;
+				pos.array[HiDim - 1] = idx;
 				arr[idx] = gen(pos);
 			}
 		}

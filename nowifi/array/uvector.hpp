@@ -27,7 +27,7 @@ namespace nw {
 
 		union
 		{
-			_Ty arr[_size];
+			_Ty array[_size];
 			
 			struct
 			{
@@ -50,23 +50,23 @@ namespace nw {
 		_Ty& operator[](size_t idx)
 		{
 			if (idx >= _size) throw std::invalid_argument("Index too big");
-			return arr[idx];
+			return array[idx];
 		}
 
 		const _Ty& operator[](size_t idx) const
 		{
 			if (idx >= _size) throw std::invalid_argument("Index too big");
-			return arr[idx];
+			return array[idx];
 		}
 
 		_Ty* begin()
 		{
-			return arr;
+			return array;
 		}
 
 		_Ty* end()
 		{
-			return arr + _size;
+			return array + _size;
 		}
 	};
 
