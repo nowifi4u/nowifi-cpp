@@ -1,4 +1,4 @@
-#pragma omce
+#pragma once
 
 #include <stdexcept>
 #include <typeinfo>
@@ -78,7 +78,7 @@ namespace nw {
 			{
 				throw std::overflow_error((std::string) typeid(baseTy).name() + " type multiplication overflow");
 			}
-			return res;
+			return (baseTy)res;
 		}
 
 		char multiply_int8(char val1, char val2)
