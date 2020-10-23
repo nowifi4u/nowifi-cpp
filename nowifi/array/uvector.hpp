@@ -31,7 +31,7 @@ namespace nw {
 			return _size;
 		}
 
-		/*_Ty& operator[](size_t idx)
+		_Ty& operator[](size_t idx)
 		{
 			if (idx >= _size) throw std::invalid_argument("Index too big");
 			return arr[idx];
@@ -41,7 +41,7 @@ namespace nw {
 		{
 			if (idx >= _size) throw std::invalid_argument("Index too big");
 			return arr[idx];
-		}*/
+		}
 	};
 
 	template <class _Ty>
