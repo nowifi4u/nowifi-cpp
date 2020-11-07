@@ -42,7 +42,7 @@ namespace nw {
 			};
 		};
 
-		static constexpr size_t size()
+		static constexpr size_t size() noexcept
 		{
 			return _size;
 		}
@@ -53,18 +53,12 @@ namespace nw {
 			return array[idx];
 		}
 
-		const _Ty& operator[](size_t idx) const
-		{
-			if (idx >= _size) throw std::invalid_argument("Index too big");
-			return array[idx];
-		}
-
-		_Ty* begin()
+		_Ty* begin() noexcept
 		{
 			return array;
 		}
 
-		_Ty* end()
+		_Ty* end() noexcept
 		{
 			return array + _size;
 		}
@@ -85,7 +79,7 @@ namespace nw {
 		using iterator = _Ty*;
 		using const_iterator = const _Ty*;
 
-		static constexpr size_t size()
+		static constexpr size_t size() noexcept
 		{
 			return 0;
 		}

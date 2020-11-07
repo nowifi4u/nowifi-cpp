@@ -6,13 +6,16 @@
 namespace nw {
 
 	template <typename charTy>
-	class basic_StringSplitter {
+	class basic_StringSplitter
+	{
+	protected:
+
+		std::basic_istringstream<charTy> stream;
+		const char sep;
+
 	public:
 
 		using string_type = std::basic_string<charTy>;
-
-		std::basic_istringstream<charTy> stream;
-		char sep;
 
 		basic_StringSplitter(const string_type& str, charTy sep)
 			: stream(str), sep(sep) {}
