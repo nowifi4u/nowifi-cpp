@@ -105,4 +105,22 @@ namespace nw {
 	template <class _Ty>
 	using uVector4 = uVector<4, _Ty>;
 
+	template <class _Ty>
+	using uVector5 = uVector<5, _Ty>;
+
+	template <class _Ty>
+	using uVector6 = uVector<6, _Ty>;
+
+	template <class _Ty>
+	using uVector7 = uVector<7, _Ty>;
+
+	template <class _Ty>
+	using uVector8 = uVector<8, _Ty>;
+
+	template <class _Ty>
+	using uVector9 = uVector<9, _Ty>;
+
+	template <class _Ty>
+	using uVector10 = uVector<10, _Ty>;
+
 } // namespace nw
